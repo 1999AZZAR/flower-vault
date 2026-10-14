@@ -1,4 +1,4 @@
-const CACHE_NAME = 'flower-vault-v1.0.2';
+const CACHE_NAME = 'flower-vault-v1.0.3';
 const ASSETS = [
   '/',
   '/index.html',
@@ -6,7 +6,7 @@ const ASSETS = [
   '/icon-192.svg',
   '/icon-512.svg',
   '/icon-maskable.svg',
-  '/js/flowerdraw.js?v=1.0.2',
+  '/js/flowerdraw.js?v=1.0.3',
   '/docs.html',
   'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',

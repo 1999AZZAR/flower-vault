@@ -333,18 +333,85 @@
                         </div>
                     </div>
 
-                    <div class="relative group pt-2">
-                        <i class="fa-solid fa-terminal absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7068] group-focus-within:text-[#8B1A1A] transition-colors mt-1"></i>
-                        <input type="text" id="seed-input" placeholder="Inject narrative sequence..." 
-                               class="w-full pl-10 pr-4 py-3 text-sm font-medium"
-                               autocomplete="off" maxlength="128" spellcheck="false" value="Solitary Bloom in Late Autumn Mist">
+                    <div class="space-y-1.5 pt-1">
+                        <div class="flex justify-between items-center">
+                            <label class="font-tech text-[9px] text-[#7A7068]">NARRATIVE_INJECTION_SEED</label>
+                            <button id="random-btn" class="font-tech text-[9px] text-[#8B1A1A] hover:underline flex items-center gap-1 cursor-pointer">
+                                <i class="fa-solid fa-dice"></i> [ RANDOM NARRATIVE ]
+                            </button>
+                        </div>
+                        <div class="relative group">
+                            <i class="fa-solid fa-terminal absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7068] group-focus-within:text-[#8B1A1A] transition-colors mt-0.5"></i>
+                            <input type="text" id="seed-input" placeholder="Inject narrative sequence..." 
+                                   class="w-full pl-10 pr-4 py-2.5 text-xs font-mono font-medium rounded-sm"
+                                   autocomplete="off" maxlength="128" spellcheck="false" value="Solitary Bloom in Late Autumn Mist">
+                        </div>
                     </div>
 
-                    <div class="relative group">
-                        <i class="fa-solid fa-fingerprint absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7068] group-focus-within:text-[#8B1A1A] transition-colors"></i>
-                        <input type="text" id="id-load-input" placeholder="Recover from ID (e.g. FLV-B9-03S1UJ)..." 
-                               class="w-full pl-10 pr-4 py-3 text-sm font-medium"
-                               autocomplete="off" maxlength="18" spellcheck="false">
+                    <div class="space-y-1.5">
+                        <label class="font-tech text-[9px] text-[#7A7068]">RECOVER_FROM_ID</label>
+                        <div class="relative group">
+                            <i class="fa-solid fa-fingerprint absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7068] group-focus-within:text-[#8B1A1A] transition-colors"></i>
+                            <input type="text" id="id-load-input" placeholder="Recover from ID (e.g. FLV-B9-03S1UJ)..." 
+                                   class="w-full pl-10 pr-4 py-2.5 text-xs font-mono font-medium rounded-sm"
+                                   autocomplete="off" maxlength="18" spellcheck="false">
+                        </div>
+                    </div>
+
+                    <!-- Botanical Telemetry Matrix / Info Card -->
+                    <div class="space-y-2 border border-[#DDD5C5] bg-[#E8E0D0] p-3 rounded-sm">
+                        <div class="flex justify-between items-center border-b border-[#DDD5C5] pb-1.5">
+                            <span class="font-tech text-[9px] font-bold text-[#2A2520]">03 // BOTANICAL_TELEMETRY</span>
+                            <span id="accession-badge" class="font-tech text-[8px] text-[#8B1A1A] font-semibold">FLV-00-000000</span>
+                        </div>
+
+                        <!-- Highlighted Derived Taxon from Narrative -->
+                        <div class="border-b border-[#DDD5C5] pb-2 pt-0.5">
+                            <div class="flex justify-between items-center text-[9px] font-tech">
+                                <span class="text-[#7A7068] text-[8px] uppercase tracking-wider">DERIVED BOTANICAL BINOMEN</span>
+                                <span class="text-[#7A7068] text-[7px] font-mono">NARRATIVE &rarr; SEED &rarr; ID &rarr; TAXON</span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <i class="fa-solid fa-seedling text-[#8B1A1A] text-[10px]"></i>
+                                <span id="tel-taxon" class="text-xs font-serif italic font-bold text-[#2A2520] tracking-wide">Paeonia suffruticosa</span>
+                            </div>
+                            <div id="tel-meaning" class="text-[8px] font-mono text-[#7A7068] italic truncate">Noble tree peony with radiant petals</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[9px] font-tech pt-1">
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">FAMILY TAXA</span>
+                                <span id="tel-family" class="text-[#2A2520] font-semibold">Paeoniaceae</span>
+                            </div>
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">PLANT HABIT</span>
+                                <span id="tel-habit" class="text-[#2A2520] font-semibold">Woody Suffruticose</span>
+                            </div>
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">PHYLLOTAXY</span>
+                                <span id="tel-phyllotaxy" class="text-[#2A2520] font-semibold">Alternate Cauline</span>
+                            </div>
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">FOLIAR LAMINA</span>
+                                <span id="tel-leaf" class="text-[#2A2520] font-semibold">Pinnate-reticulate</span>
+                            </div>
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">FLORAL MERISM</span>
+                                <span id="tel-petals" class="text-[#2A2520] font-semibold">8 Petals</span>
+                            </div>
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">STEM AXES</span>
+                                <span id="tel-stem" class="text-[#2A2520] font-semibold">1 Primary Axis</span>
+                            </div>
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">PIGMENT CHROMA</span>
+                                <span id="tel-chroma" class="text-[#2A2520] font-semibold">Hue 340&deg; / 20&deg;</span>
+                            </div>
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">PTR HASH / METRIC</span>
+                                <span id="tel-hash" class="text-[#2A2520] font-semibold">0x00000000</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -411,12 +478,24 @@
     </main>
 
     <!-- Core Engine Scripts -->
-    <script src="js/flowerdraw.js?v=1.0.2"></script>
+    <script src="js/flowerdraw.js?v=1.0.3"></script>
     <script>
         const DOM = {
             target: document.getElementById('render-target'),
             seedInput: document.getElementById('seed-input'),
             idLoadInput: document.getElementById('id-load-input'),
+            randomBtn: document.getElementById('random-btn'),
+            accessionBadge: document.getElementById('accession-badge'),
+            telTaxon: document.getElementById('tel-taxon'),
+            telMeaning: document.getElementById('tel-meaning'),
+            telFamily: document.getElementById('tel-family'),
+            telHabit: document.getElementById('tel-habit'),
+            telPhyllotaxy: document.getElementById('tel-phyllotaxy'),
+            telLeaf: document.getElementById('tel-leaf'),
+            telPetals: document.getElementById('tel-petals'),
+            telStem: document.getElementById('tel-stem'),
+            telChroma: document.getElementById('tel-chroma'),
+            telHash: document.getElementById('tel-hash'),
             hashMetric: document.getElementById('hash-metric'),
             specimenId: document.getElementById('specimen-id'),
             copyBtn: document.getElementById('copy-btn'),
@@ -550,6 +629,22 @@
 
             DOM.specimenId.textContent = `SEQ: ${currentSpecimen.accessionId}`;
             DOM.hashMetric.textContent = `PTR: ${currentSpecimen.hashHex}`;
+
+            // Update Botanical Telemetry Matrix / Info Card
+            if (currentSpecimen.metrics) {
+                const m = currentSpecimen.metrics;
+                if (DOM.accessionBadge) DOM.accessionBadge.textContent = m.accessionId;
+                if (DOM.telTaxon) DOM.telTaxon.textContent = m.taxon;
+                if (DOM.telMeaning) DOM.telMeaning.textContent = m.meaning || "";
+                if (DOM.telFamily) DOM.telFamily.textContent = m.family;
+                if (DOM.telHabit) DOM.telHabit.textContent = m.habit;
+                if (DOM.telPhyllotaxy) DOM.telPhyllotaxy.textContent = m.phyllotaxy;
+                if (DOM.telLeaf) DOM.telLeaf.textContent = `${m.leafType} (${m.leafLength}mm)`;
+                if (DOM.telPetals) DOM.telPetals.textContent = `${m.flowerPetals} Petals (${m.flowerLength}mm)`;
+                if (DOM.telStem) DOM.telStem.textContent = m.stemDynamics;
+                if (DOM.telChroma) DOM.telChroma.innerHTML = m.pigmentChroma;
+                if (DOM.telHash) DOM.telHash.textContent = m.hashHex;
+            }
 
             // Sync URL parameters
             if (document.body.dataset.mode !== 'embed') {
@@ -784,6 +879,33 @@
                 renderSynthesisPipeline();
             });
         });
+
+        const BOTANICAL_NARRATIVES = [
+            "Solitary Bloom in Late Autumn Mist",
+            "Wild Camellia on High Mountain Ridge",
+            "Morning Dew on Ancient Xuan Paper",
+            "Imperial Peony in the Forbidden Pavilion",
+            "Slender Bamboo and Winter Plum Blossoms",
+            "Wild Chrysanthemum by the Stone Stream",
+            "Fragrant Orchid in Shaded Mountain Vale",
+            "Lotus Blossom Emerging from Clear Ripples",
+            "Alpine Rhododendron on Windward Slope",
+            "Nocturnal Night-Blooming Cereus in Solitude",
+            "Linnaean Herbarium Plate of Magnolia Grandiflora",
+            "Woody Prunus Serrulata in Spring Awakening",
+            "Foliar Venation and Chlorophyll Transmutation",
+            "Botanical Expedition to Southern Hengduan",
+            "Gongbi Watercolor Study of Hibiscus Mutabilis"
+        ];
+
+        if (DOM.randomBtn) {
+            DOM.randomBtn.addEventListener('click', () => {
+                const topic = BOTANICAL_NARRATIVES[Math.floor(Math.random() * BOTANICAL_NARRATIVES.length)];
+                DOM.seedInput.value = topic;
+                DOM.idLoadInput.value = "";
+                renderSynthesisPipeline();
+            });
+        }
 
         DOM.seedInput.addEventListener('input', () => {
             DOM.idLoadInput.value = "";
