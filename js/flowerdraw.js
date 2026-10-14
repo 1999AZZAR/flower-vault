@@ -1152,7 +1152,8 @@
     const plantH = Math.max(10, bd.ymax - bd.ymin);
     const targetW = renderWidth * 0.78;
     const targetH = renderHeight * 0.72;
-    const scale = Math.min(targetW / plantW, targetH / plantH, 1.4);
+    const maxScale = (Math.min(renderWidth, renderHeight) / 600) * 1.45;
+    const scale = Math.min(targetW / plantW, targetH / plantH, maxScale);
 
     const cx = (bd.xmin + bd.xmax) / 2;
     const cy = bd.ymax;
@@ -1326,7 +1327,8 @@
     const plantH = Math.max(10, bd.ymax - bd.ymin);
     const targetW = renderWidth * 0.78;
     const targetH = renderHeight * 0.74;
-    const scale = Math.min(targetW / plantW, targetH / plantH, 1.4);
+    const maxScale = (Math.min(renderWidth, renderHeight) / 600) * 1.45;
+    const scale = Math.min(targetW / plantW, targetH / plantH, maxScale);
 
     const cx = (bd.xmin + bd.xmax) / 2;
     const cy = bd.ymax;
@@ -1448,6 +1450,7 @@
 
       // Create target canvas if available or provided
       const canvas = options.canvas || (typeof document !== 'undefined' ? document.createElement('canvas') : null);
+      let plantCanvas = null;
 
       if (canvas && typeof canvas.getContext === 'function') {
         canvas.width = width;
@@ -1468,21 +1471,35 @@
         // 3. Apply subtle paper grain texture
         drawPaperGrain(ctx, width, height, noise);
 
-        // 4. Render Technical Archival Plate Framing & Stamps
+        // Snapshot plantCanvas prior to border framing and cursive lettering
+        if (typeof document !== 'undefined') {
+          plantCanvas = document.createElement('canvas');
+          plantCanvas.width = width;
+          plantCanvas.height = height;
+          const pctx = plantCanvas.getContext('2d');
+          pctx.drawImage(canvas, 0, 0);
+        }
+
+        // 4. Render Technical Archival Plate Framing & Stamps (Swiss-Archival Standard)
+        const minDim = Math.min(width, height);
+        const borderGap = Math.max(3, Math.round(minDim * 0.007));
+        const outerLineWidth = Math.max(1.0, (minDim / 600) * 1.0);
+        const innerLineWidth = Math.max(0.5, (minDim / 600) * 0.5);
+
         ctx.save();
         ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = 1.0;
+        ctx.lineWidth = outerLineWidth;
         ctx.strokeRect(margin, margin, width - margin * 2, height - margin * 2);
 
         // Inner subtle border
         ctx.strokeStyle = metaColor;
-        ctx.lineWidth = 0.5;
-        ctx.strokeRect(margin + 4, margin + 4, width - (margin + 4) * 2, height - (margin + 4) * 2);
+        ctx.lineWidth = innerLineWidth;
+        ctx.strokeRect(margin + borderGap, margin + borderGap, width - (margin + borderGap) * 2, height - (margin + borderGap) * 2);
         ctx.restore();
 
         // 5. Render Cursive Hershey Latin Binomen at Bottom-Center
-        const cursiveScale = Math.max(0.28, Math.min(0.38, (width / 600) * 0.34));
-        const cursiveY = height - margin - 15;
+        const cursiveScale = Math.max(0.26, (minDim / 600) * 0.34);
+        const cursiveY = height - margin - Math.max(12, Math.round(minDim * 0.025));
         const [textW] = put_text(taxon.taxonName);
         const cursiveX = Math.round((width - textW * cursiveScale) / 2);
         renderHersheyText(ctx, taxon.taxonName, cursiveX, cursiveY, cursiveScale, strokeColor);
@@ -1490,6 +1507,7 @@
 
       return {
         canvas,
+        plantCanvas,
         metrics,
         accessionId,
         hashHex,
@@ -1510,19 +1528,41 @@
     /**
      * Generate an Archival SVG Document wrapping the specimen and vector framing.
      */
-    generateSvgPlate: function(canvas, metrics, options = {}) {
-      const width = canvas.width;
-      const height = canvas.height;
-      const margin = options.margin || 14;
-      const dataUrl = canvas.toDataURL('image/png');
+    generateSvgPlate: function(target, metrics = {}, options = {}) {
+      let canvas = target;
+      let plantCanvas = null;
+      let m = metrics;
+
+      if (target && target.canvas) {
+        canvas = target.canvas;
+        plantCanvas = target.plantCanvas || null;
+        m = target.metrics || metrics;
+      } else if (target && target.tagName === 'CANVAS') {
+        canvas = target;
+      }
+
+      const width = canvas ? canvas.width : (options.width || 600);
+      const height = canvas ? canvas.height : (options.height || 600);
+      const minDim = Math.min(width, height);
+      const margin = options.margin || Math.round(minDim * 0.024);
+      const borderGap = Math.max(3, Math.round(minDim * 0.007));
+      const outerLineWidth = Math.max(1.0, (minDim / 600) * 1.0);
+      const innerLineWidth = Math.max(0.5, (minDim / 600) * 0.5);
+
       const metaColor = options.metaColor || '#7A7068';
       const strokeColor = options.stroke || '#2A2520';
+      const taxonName = m.taxon || options.taxon || '';
 
-      const cursiveScale = Math.max(0.28, Math.min(0.38, (width / 600) * 0.34));
-      const cursiveY = height - margin - 15;
-      const [textW] = put_text(metrics.taxon || '');
+      const cursiveScale = Math.max(0.26, (minDim / 600) * 0.34);
+      const cursiveY = height - margin - Math.max(12, Math.round(minDim * 0.025));
+      const [textW] = put_text(taxonName);
       const cursiveX = Math.round((width - textW * cursiveScale) / 2);
-      const hersheySvgPaths = hersheyToSvgPaths(metrics.taxon || '', cursiveX, cursiveY, cursiveScale);
+      const hersheySvgPaths = taxonName ? hersheyToSvgPaths(taxonName, cursiveX, cursiveY, cursiveScale) : '';
+
+      // Use plantCanvas if available for vector borders and Hershey text without double-printing
+      const rasterSource = plantCanvas || canvas;
+      const dataUrl = rasterSource ? rasterSource.toDataURL('image/png') : '';
+      const hasBordersOnRaster = !plantCanvas;
 
       return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">
@@ -1530,16 +1570,16 @@
   <rect width="100%" height="100%" fill="#EFE9DC" />
   
   <!-- Gongbi Procedural Botanical Canvas Rendering -->
-  <image href="${dataUrl}" x="0" y="0" width="${width}" height="${height}" />
+  <image href="${dataUrl}" xlink:href="${dataUrl}" x="0" y="0" width="${width}" height="${height}" />
   
-  <!-- Archival Drafting Borders -->
-  <rect x="${margin}" y="${margin}" width="${width - margin * 2}" height="${height - margin * 2}" fill="none" stroke="${strokeColor}" stroke-width="1.0" />
-  <rect x="${margin + 4}" y="${margin + 4}" width="${width - (margin + 4) * 2}" height="${height - (margin + 4) * 2}" fill="none" stroke="${metaColor}" stroke-width="0.5" />
+  ${!hasBordersOnRaster ? `<!-- Archival Drafting Borders (Swiss-Archival Standard) -->
+  <rect x="${margin}" y="${margin}" width="${width - margin * 2}" height="${height - margin * 2}" fill="none" stroke="${strokeColor}" stroke-width="${outerLineWidth.toFixed(2)}" />
+  <rect x="${margin + borderGap}" y="${margin + borderGap}" width="${width - (margin + borderGap) * 2}" height="${height - (margin + borderGap) * 2}" fill="none" stroke="${metaColor}" stroke-width="${innerLineWidth.toFixed(2)}" />
   
   <!-- Engraved Cursive Botanical Binomen -->
-  <g stroke="${strokeColor}" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+  <g stroke="${strokeColor}" stroke-width="${(outerLineWidth * 1.05).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round">
     ${hersheySvgPaths}
-  </g>
+  </g>` : ''}
 </svg>`;
     }
   };
