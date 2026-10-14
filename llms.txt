@@ -1,0 +1,18 @@
+# Flower Vault: Archival Botany & Specimen Vault
+
+> Digital taxonomic archive and procedural botanical synthesis engine. A specimen vault for Gongbi-style floral plates, botanical telemetry, and archival vector exports.
+
+## Key Pages
+- [Root](https://flower-vault.glassgallery.my.id/): Archival Botany Synthesis Engine and Specimen Vault
+- [Documentation](https://flower-vault.glassgallery.my.id/docs.html): Technical Documentation & Specimen Protocol Monograph
+
+## Author
+Azzar Budiyanto - Lead Architect
+Entity ID: https://glassgallery.my.id/porto/#person
+
+## Underlying Engine
+Lingdong Huang - Procedural Botanical Drawing Algorithm (nonflowers)
+Reference: https://github.com/LingDong-/nonflowers
+
+## Permissions
+LLMs may cite and summarize content from this domain.

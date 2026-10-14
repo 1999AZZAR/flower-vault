@@ -1,0 +1,12 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#EFE9DC"/>
+  <circle cx="256" cy="256" r="190" stroke="#8B1A1A" stroke-width="4" fill="#F7F3EB"/>
+  <!-- Minimalist Botanical Linework inside safe circle -->
+  <path d="M256 360 C256 290 242 245 256 195" stroke="#2A2520" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M250 290 C210 282 190 250 196 230 C222 235 242 258 250 274" stroke="#2F4836" stroke-width="3.5" fill="#2F4836" fill-opacity="0.15"/>
+  <path d="M253 245 C282 230 312 236 320 262 C294 270 268 260 254 249" stroke="#2F4836" stroke-width="3.5" fill="#2F4836" fill-opacity="0.15"/>
+  <path d="M256 195 C222 155 226 118 256 138 C286 118 290 155 256 195 Z" stroke="#8B1A1A" stroke-width="4" fill="#8B1A1A" fill-opacity="0.2"/>
+  <path d="M256 195 C200 190 188 156 226 160 C242 165 251 181 256 195 Z" stroke="#8B1A1A" stroke-width="3.5" fill="#8B1A1A" fill-opacity="0.15"/>
+  <path d="M256 195 C312 190 324 156 286 160 C270 165 261 181 256 195 Z" stroke="#8B1A1A" stroke-width="3.5" fill="#8B1A1A" fill-opacity="0.15"/>
+  <circle cx="256" cy="170" r="6" fill="#8B1A1A"/>
+</svg>

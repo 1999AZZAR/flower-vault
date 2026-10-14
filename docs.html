@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Flower Vault Technical Documentation: Procedural botany engine, API, embed protocols, and Gongbi botanical plate synthesis.">
+    <title>Technical Documentation | Flower Vault</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --archival-bg: #EFE9DC;
+            --archival-fg: #2A2520;
+            --archival-surface: #F7F3EB;
+            --archival-accent: #8B1A1A;
+            --archival-muted: #DDD5C5;
+            --archival-meta: #7A7068;
+            --grid-color: rgba(122, 112, 104, 0.08);
+        }
+
+        body { 
+            background-color: var(--archival-bg); 
+            background-image: 
+                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--archival-fg); 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .font-tech { 
+            font-family: 'JetBrains Mono', monospace; 
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .surface-card { 
+            background: var(--archival-surface); 
+            border: 1px solid var(--archival-muted); 
+            box-shadow: 0 4px 24px -12px rgba(42, 37, 32, 0.08);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(42, 37, 32, 0.06);
+            padding: 0.15rem 0.35rem;
+            border-radius: 2px;
+            font-size: 0.88em;
+        }
+
+        pre {
+            background: var(--archival-bg);
+            border-left: 3px solid var(--archival-accent);
+            padding: 1rem;
+            overflow-x: auto;
+            font-size: 0.82em;
+            margin: 0.85rem 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .noise-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.04;
+            mix-blend-mode: multiply;
+        }
+
+        .nav-link:hover { color: var(--archival-accent); }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8">
+    <!-- Paper Noise Overlay -->
+    <svg class="noise-layer" aria-hidden="true">
+        <filter id="fractalNoise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#fractalNoise)"/>
+    </svg>
+
+    <div class="max-w-4xl mx-auto space-y-8 relative z-10">
+        <!-- Documentation Header -->
+        <header class="flex items-center justify-between border-b border-[#DDD5C5] pb-6">
+            <div class="space-y-1">
+                <a href="/" class="font-tech text-[10px] text-[#7A7068] hover:text-[#8B1A1A] transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> RETURN_TO_VAULT
+                </a>
+                <h1 class="font-tech text-xl font-bold text-[#2A2520]">TECHNICAL_DOCUMENTATION</h1>
+                <p class="text-xs text-[#7A7068]">ARCHIVAL BOTANY & PROCEDURAL SPECIMEN SYNTHESIS PROTOCOLS</p>
+            </div>
+            <div class="text-right hidden sm:block">
+                <p class="font-tech text-[10px] text-[#7A7068]">VERSION: 1.0.0</p>
+                <p class="font-tech text-[10px] text-[#8B1A1A]">STATUS: OPERATIONAL</p>
+            </div>
+        </header>
+
+        <!-- Monograph Intro -->
+        <section class="surface-card p-6 sm:p-8 rounded-sm space-y-4">
+            <h2 class="font-tech text-xs text-[#8B1A1A] tracking-widest">[01] ARCHITECTURAL_OVERVIEW</h2>
+            <p class="text-sm text-[#4A423A] leading-relaxed">
+                Flower Vault is an archival procedural botany synthesis engine developed by Azzar Budiyanto, expanding upon the foundational botanical mathematics designed by Lingdong Huang (nonflowers). The engine synthesizes morphologically coherent angiosperms and gymnosperms in the traditional Gongbi (工笔) fine-brush watercolor tradition, combining rational Bézier splines, 3D Euler rotations, Perlin pigment percolation, and deterministic taxonomic metadata recovery.
+            </p>
+            <p class="text-sm text-[#4A423A] leading-relaxed">
+                Each specimen is assigned an immutable Accession ID (e.g. <code>FLV-7F-3K9X1A</code>) generated via a 32-bit FNV-1a hashing function. The engine guarantees deterministic reproducibility: injecting the identical narrative phrase or Accession ID reconstitutes the exact habit, venation network, corolla geometry, and chromatic pigment washes across independent compute environments.
+            </p>
+        </section>
+
+        <!-- Deterministic Pipeline -->
+        <section class="surface-card p-6 sm:p-8 rounded-sm space-y-4">
+            <h2 class="font-tech text-xs text-[#8B1A1A] tracking-widest">[02] DETERMINISTIC_PIPELINE</h2>
+            <p class="text-sm text-[#4A423A]">
+                The synthesis cycle executes across four strictly ordered stages:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-tech">
+                <div class="p-4 border border-[#DDD5C5] bg-[#EFE9DC]/50 space-y-2">
+                    <div class="text-[#8B1A1A]">PHASE_01: INJECTION &amp; HASHING</div>
+                    <div class="text-[#7A7068] normal-case font-sans">
+                        Arbitrary narrative strings are passed to a modified 32-bit FNV-1a non-cryptographic hash function yielding an unsigned integer seed between 1 and 2,147,483,646.
+                    </div>
+                </div>
+                <div class="p-4 border border-[#DDD5C5] bg-[#EFE9DC]/50 space-y-2">
+                    <div class="text-[#8B1A1A]">PHASE_02: TAXONOMIC DERIVATION</div>
+                    <div class="text-[#7A7068] normal-case font-sans">
+                        The seed deterministically derives the plant habit (Woody vs Herbal), binomial taxon name (Genus + Species), botanical family, foliar venation pattern, and floral merism.
+                    </div>
+                </div>
+                <div class="p-4 border border-[#DDD5C5] bg-[#EFE9DC]/50 space-y-2">
+                    <div class="text-[#8B1A1A]">PHASE_03: PROCEDURAL MORPHOLOGY</div>
+                    <div class="text-[#7A7068] normal-case font-sans">
+                        Spline skeletons are generated with 3D coordinate transformations. Foliage polygons are populated with primary and secondary venation ribs, followed by calyx and petal layering.
+                    </div>
+                </div>
+                <div class="p-4 border border-[#DDD5C5] bg-[#EFE9DC]/50 space-y-2">
+                    <div class="text-[#8B1A1A]">PHASE_04: GONGBI CHROMATOGRAPHY</div>
+                    <div class="text-[#7A7068] normal-case font-sans">
+                        Multi-pass alpha percolation simulates mineral pigments over xuan paper. The final specimen plate is auto-centered and engraved with plate registration stamps.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Botanical Plant Habits -->
+        <section class="surface-card p-6 sm:p-8 rounded-sm space-y-4">
+            <h2 class="font-tech text-xs text-[#8B1A1A] tracking-widest">[03] BOTANICAL_HABITS_AND_TRAITS</h2>
+            <p class="text-sm text-[#4A423A]">
+                The engine distinguishes two primary growth architectures:
+            </p>
+            <div class="space-y-3 text-xs">
+                <div class="p-3 border border-[#DDD5C5]">
+                    <span class="font-tech font-bold text-[#8B1A1A]">HABITUS WOODY (FRUTEX / ARBOR):</span>
+                    <p class="mt-1 text-[#4A423A]">
+                        Features bifurcating lignified stems with secondary cambial thickening. Bark texture is synthesized using multi-stroke charcoal strokes. Petioles emerge from nodes at staggered phyllotaxis angles. Flowers are distributed along terminal branches with variable nodding angles.
+                    </p>
+                </div>
+                <div class="p-3 border border-[#DDD5C5]">
+                    <span class="font-tech font-bold text-[#8B1A1A]">HABITUS HERBAL (HERBA SUCCULENTA):</span>
+                    <p class="mt-1 text-[#4A423A]">
+                        Exhibits soft succulent petioles radiating from basal or acaulescent nodes. Foliage features broader lamina surface area with delicate reticulate or parallel venation. Scapes support solitary or racemose floral inflorescences.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Embed & Integration Protocol -->
+        <section class="surface-card p-6 sm:p-8 rounded-sm space-y-4">
+            <h2 class="font-tech text-xs text-[#8B1A1A] tracking-widest">[04] EMBED_AND_IFRAME_PROTOCOLS</h2>
+            <p class="text-sm text-[#4A423A]">
+                Flower Vault supports headless and distraction-free iframe embeds via the <code>?mode=embed</code> query parameter. In this mode, all GUI controls, navigation headers, and control bars are stripped, leaving only the pure specimen canvas and the centered fullscreen expand control.
+            </p>
+
+            <div class="space-y-2">
+                <p class="font-tech text-xs text-[#2A2520] font-semibold">IFRAME EMBED MARKUP:</p>
+                <pre>&lt;iframe 
+  src="https://flower-vault.glassgallery.my.id/?mode=embed&amp;narrative=Alpine+Flora&amp;w=4&amp;h=5" 
+  width="600" 
+  height="750" 
+  style="border: 1px solid #DDD5C5; background: #EFE9DC;"
+  loading="lazy"&gt;
+&lt;/iframe&gt;</pre>
+            </div>
+
+            <div class="space-y-2">
+                <p class="font-tech text-xs text-[#2A2520] font-semibold">URL QUERY PARAMETERS:</p>
+                <div class="border border-[#DDD5C5] text-xs">
+                    <div class="grid grid-cols-3 p-2 bg-[#EFE9DC] border-b border-[#DDD5C5] font-tech text-[#7A7068]">
+                        <div>PARAMETER</div>
+                        <div>TYPE</div>
+                        <div>DESCRIPTION</div>
+                    </div>
+                    <div class="grid grid-cols-3 p-2 border-b border-[#DDD5C5]/50">
+                        <div><code>mode</code></div>
+                        <div>string</div>
+                        <div>Set to <code>embed</code> for distraction-free canvas rendering.</div>
+                    </div>
+                    <div class="grid grid-cols-3 p-2 border-b border-[#DDD5C5]/50">
+                        <div><code>id</code></div>
+                        <div>string</div>
+                        <div>Accession ID (e.g. <code>FLV-7F-3K9X1A</code>) to reconstitute an exact specimen.</div>
+                    </div>
+                    <div class="grid grid-cols-3 p-2 border-b border-[#DDD5C5]/50">
+                        <div><code>narrative</code></div>
+                        <div>string</div>
+                        <div>Freeform narrative text injected into the FNV-1a hashing algorithm.</div>
+                    </div>
+                    <div class="grid grid-cols-3 p-2">
+                        <div><code>w</code>, <code>h</code></div>
+                        <div>number</div>
+                        <div>Aspect ratio dimensions (e.g. <code>w=4&amp;h=5</code>, <code>w=1&amp;h=1</code>, <code>w=16&amp;h=9</code>).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <p class="font-tech text-xs text-[#2A2520] font-semibold">POSTMESSAGE BIDIRECTIONAL PROTOCOL:</p>
+                <p class="text-xs text-[#4A423A]">
+                    Parent applications can remotely control the embedded specimen engine via <code>window.postMessage</code>:
+                </p>
+                <pre>// Instruct embedded vault to synthesize by narrative:
+iframeEl.contentWindow.postMessage({
+  type: 'SET_NARRATIVE',
+  data: { narrative: 'Nocturnal Jasmine of the East' }
+}, '*');
+
+// Listen for specimen telemetry events:
+window.addEventListener('message', (event) => {
+  if (event.data?.type === 'SPECIMEN_SYNTHESIZED') {
+    const { id, taxon, family, habit } = event.data.data;
+    console.log('Specimen mounted:', id, taxon, family, habit);
+  }
+});</pre>
+            </div>
+        </section>
+
+        <!-- Specimen Plate Purity & Export -->
+        <section class="surface-card p-6 sm:p-8 rounded-sm space-y-4">
+            <h2 class="font-tech text-xs text-[#8B1A1A] tracking-widest">[05] SPECIMEN_PLATE_PURITY_AND_EXPORTS</h2>
+            <p class="text-sm text-[#4A423A]">
+                The specimen plate adheres to strict Swiss-Archival conventions. Ornamental visual clutter is eliminated in favor of clean technical stamps:
+            </p>
+            <ul class="list-disc list-inside text-xs text-[#4A423A] space-y-1 pl-2">
+                <li><strong class="font-tech text-[#2A2520]">TOP-RIGHT:</strong> Memory pointer telemetry (e.g. <code>PTR:0x7F...</code>).</li>
+                <li><strong class="font-tech text-[#2A2520]">BOTTOM-LEFT:</strong> Archival accession identifier (e.g. <code>ID:FLV-7F-3K9X1A</code>).</li>
+                <li><strong class="font-tech text-[#2A2520]">BOTTOM-CENTER:</strong> Engraved cursive Latin binomial name rendered via Hershey vector cursive glyphs.</li>
+            </ul>
+            <p class="text-sm text-[#4A423A] mt-2">
+                Both export formats are production-grade:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-tech">
+                <div class="p-3 border border-[#DDD5C5]">
+                    <div class="text-[#8B1A1A] font-bold mb-1">ARCHIVAL PNG (300 DPI)</div>
+                    <p class="normal-case font-sans text-[#7A7068]">
+                        High-resolution 2400px raster render featuring mineral pigment gradients, paper grain percolation, and typography.
+                    </p>
+                </div>
+                <div class="p-3 border border-[#DDD5C5]">
+                    <div class="text-[#8B1A1A] font-bold mb-1">STANDALONE VECTOR SVG</div>
+                    <p class="normal-case font-sans text-[#7A7068]">
+                        Self-contained SVG plate containing high-res raster botanical canvas, vector drafting borders, technical stamps, and authentic Hershey vector cursive curves.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Keyboard Accelerators -->
+        <section class="surface-card p-6 sm:p-8 rounded-sm space-y-4">
+            <h2 class="font-tech text-xs text-[#8B1A1A] tracking-widest">[06] KEYBOARD_ACCELERATORS</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-tech">
+                <div class="p-2 border border-[#DDD5C5]"><span class="text-[#8B1A1A]">SPACE / R</span>: SYNTHESIZE</div>
+                <div class="p-2 border border-[#DDD5C5]"><span class="text-[#8B1A1A]">E</span>: EXPAND MODAL</div>
+                <div class="p-2 border border-[#DDD5C5]"><span class="text-[#8B1A1A]">ESC</span>: EXIT MODAL</div>
+                <div class="p-2 border border-[#DDD5C5]"><span class="text-[#8B1A1A]">P</span>: EXPORT PNG</div>
+                <div class="p-2 border border-[#DDD5C5]"><span class="text-[#8B1A1A]">S</span>: EXPORT SVG</div>
+                <div class="p-2 border border-[#DDD5C5]"><span class="text-[#8B1A1A]">C</span>: COPY LINK</div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="pt-8 border-t border-[#DDD5C5] flex flex-col sm:flex-row justify-between text-xs text-[#7A7068] font-tech gap-4">
+            <div>
+                &copy; 2026 AZZAR BUDIYANTO &middot; ARCHIVAL VAULT SUITE
+            </div>
+            <div>
+                ENGINE: <a href="https://github.com/LingDong-/nonflowers" target="_blank" rel="noopener" class="underline hover:text-[#8B1A1A]">LINGDONG HUANG (NONFLOWERS)</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

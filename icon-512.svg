@@ -1,0 +1,20 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#EFE9DC"/>
+  <rect x="48" y="48" width="416" height="416" stroke="#8B1A1A" stroke-width="4"/>
+  <path d="M256 48V464" stroke="#8B1A1A" stroke-width="1.5" stroke-dasharray="8 8" opacity="0.3"/>
+  <path d="M48 256H464" stroke="#8B1A1A" stroke-width="1.5" stroke-dasharray="8 8" opacity="0.3"/>
+  <!-- Minimalist Botanical Linework -->
+  <!-- Stem -->
+  <path d="M256 400 C256 300 236 248 256 180" stroke="#2A2520" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <!-- Foliage Left -->
+  <path d="M248 300 C198 290 172 250 180 226 C212 232 238 260 248 280" stroke="#2F4836" stroke-width="4.5" fill="#2F4836" fill-opacity="0.15"/>
+  <!-- Foliage Right -->
+  <path d="M252 245 C288 226 326 234 336 266 C304 276 272 264 254 250" stroke="#2F4836" stroke-width="4.5" fill="#2F4836" fill-opacity="0.15"/>
+  <!-- Petals / Corolla -->
+  <path d="M256 180 C216 132 220 86 256 112 C292 86 296 132 256 180 Z" stroke="#8B1A1A" stroke-width="5" fill="#8B1A1A" fill-opacity="0.2"/>
+  <path d="M256 180 C188 174 174 134 220 138 C240 144 250 164 256 180 Z" stroke="#8B1A1A" stroke-width="4.5" fill="#8B1A1A" fill-opacity="0.15"/>
+  <path d="M256 180 C324 174 338 134 292 138 C272 144 262 164 256 180 Z" stroke="#8B1A1A" stroke-width="4.5" fill="#8B1A1A" fill-opacity="0.15"/>
+  <circle cx="256" cy="150" r="8" fill="#8B1A1A"/>
+  <!-- Archival Corner Registration Marks -->
+  <path d="M40 56H56 M48 40V56 M472 56H456 M464 40V56 M40 456H56 M48 472V456 M472 456H456 M464 472V456" stroke="#7A7068" stroke-width="2"/>
+</svg>
