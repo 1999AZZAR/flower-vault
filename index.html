@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Flower Vault: Archival Botany & Procedural Specimen Vault of Azzar Budiyanto. A high-end specimen vault for archival synthesis.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="https://flower-vault.glassgallery.my.id/">
     
-    <!-- Technical & Performance Meta -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="color-scheme" content="light">
-    <meta name="theme-color" content="#EFE9DC">
-    
-    <!-- PWA Web App Manifest -->
-    <link rel="manifest" href="/manifest.json">
+    <!-- Favicons & Icons -->
     <link rel="icon" type="image/svg+xml" href="/icon-192.svg">
     <link rel="apple-touch-icon" href="/icon-192.svg">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#8B1A1A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <title>Flower Vault: Archival Botany & Procedural Specimen Vault</title>
+    <title>Flower Vault: Digital Archive and Archival Specimen Vault</title>
     
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -34,57 +35,117 @@
           ]
         },
         {
-          "@type": "WebApplication",
-          "@id": "https://flower-vault.glassgallery.my.id/#app",
+          "@type": "Organization",
+          "@id": "https://glassgallery.my.id/#organization",
           "name": "Flower Vault",
-          "url": "https://flower-vault.glassgallery.my.id",
-          "description": "Procedural botany and Gongbi-style floral specimen synthesis engine based on Lingdong Huang's nonflowers and Azzar Budiyanto's Archival Vault Suite.",
-          "applicationCategory": "DesignApplication",
-          "operatingSystem": "All",
-          "author": { "@id": "https://glassgallery.my.id/porto/#person" }
+          "founder": {
+            "@id": "https://glassgallery.my.id/porto/#person"
+          },
+          "url": "https://flower-vault.glassgallery.my.id/"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://flower-vault.glassgallery.my.id/#website",
+          "url": "https://flower-vault.glassgallery.my.id/",
+          "name": "Flower Vault | Archival Botany Synthesis",
+          "description": "Procedural botanical specimen archive, Gongbi-style floral synthesis, and vector plate engine.",
+          "publisher": {
+            "@id": "https://glassgallery.my.id/#organization"
+          },
+          "author": {
+            "@id": "https://glassgallery.my.id/porto/#person"
+          }
         }
       ]
     }
     </script>
     
-    <!-- Typography & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Utility Layer -->
     <script src="https://cdn.tailwindcss.com"></script>
-
+    
     <style>
         :root {
-            --archival-bg: #EFE9DC;
-            --archival-surface: #F7F3EB;
+            --archival-bg: #E8E0D0;
             --archival-fg: #2A2520;
-            --archival-muted: #DDD5C5;
+            --archival-surface: #EFE9DC;
             --archival-accent: #8B1A1A;
+            --archival-muted: #DDD5C5;
             --archival-meta: #7A7068;
+            --grid-color: rgba(191, 182, 166, 0.2);
         }
 
-        body {
-            background-color: var(--archival-bg);
+        ::selection { background: var(--archival-accent); color: var(--archival-surface); }
+
+        body { 
+            background-color: var(--archival-bg); 
+            background-image: linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+            background-size: 10% 100%;
+            color: var(--archival-fg); 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .noise-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.04;
+            mix-blend-mode: multiply;
+        }
+
+        .font-tech { 
+            font-family: 'JetBrains Mono', monospace; 
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .surface-card { 
+            background: var(--archival-surface); 
+            border: 1px solid var(--archival-muted); 
+            box-shadow: 0 4px 24px -12px rgba(42, 37, 32, 0.08);
+        }
+
+        input {
+            background: var(--archival-bg);
+            border: 1px solid var(--archival-muted);
             color: var(--archival-fg);
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-image: 
-                linear-gradient(to right, rgba(122, 112, 104, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(122, 112, 104, 0.05) 1px, transparent 1px);
-            background-size: 24px 24px;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        .font-tech {
-            font-family: 'JetBrains Mono', monospace;
+        input:focus { 
+            outline: none; 
+            border-color: var(--archival-accent); 
         }
 
-        /* Tactile Custom Cursor */
+        #render-target canvas {
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            box-shadow: 0 6px 20px -8px rgba(42, 37, 32, 0.12);
+        }
+
+        /* Matrix Control Styling */
+        .ratio-btn {
+            border: 1px solid var(--archival-muted);
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .ratio-btn:hover { border-color: var(--archival-accent); color: var(--archival-accent); }
+        .ratio-btn[data-active="true"] {
+            background: var(--archival-accent);
+            color: var(--archival-surface);
+            border-color: var(--archival-accent);
+        }
+
+        /* Custom Cursor */
         @media (pointer: fine) {
-            body:not([data-mode="embed"]) *:not(#fullscreen-btn):not(#fullscreen-btn *) { 
-                cursor: none !important; 
-            }
+            body:not([data-mode="embed"]) *:not(#fullscreen-btn):not(#fullscreen-btn *) { cursor: none !important; }
             .custom-cursor, .custom-cursor-trail {
                 position: fixed;
                 top: 0; left: 0;
@@ -105,41 +166,10 @@
                 transition: transform 0.05s linear, background-color 0.2s, border-color 0.2s;
             }
             .custom-cursor.hover { --scale: 1.5; }
-            .custom-cursor-trail.hover { 
-                --scale: 1.5; 
-                background-color: rgba(139, 26, 26, 0.1); 
-            }
+            .custom-cursor-trail.hover { --scale: 1.5; background-color: rgba(139, 26, 26, 0.1); }
         }
-
-        /* Fractal Paper Noise Overlay */
-        .noise-layer {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.04;
-        }
-
-        /* Archival Cards & Form Factor */
-        .surface-card {
-            background-color: var(--archival-surface);
-            border: 1px solid var(--archival-muted);
-            box-shadow: 2px 2px 0px rgba(42, 37, 32, 0.04);
-        }
-
-        .ratio-btn {
-            border: 1px solid var(--archival-muted);
-            transition: all 0.15s ease;
-            color: var(--archival-meta);
-        }
-        .ratio-btn:hover {
-            border-color: var(--archival-accent);
-            color: var(--archival-fg);
-        }
-        .ratio-btn[data-active="true"] {
-            background: var(--archival-accent);
-            color: var(--archival-surface);
-            border-color: var(--archival-accent);
+        @media print {
+            .custom-cursor, .custom-cursor-trail { display: none !important; }
         }
 
         /* Fullscreen Viewer */
@@ -156,8 +186,8 @@
         }
 
         #fullscreen-viewer.active {
-            display: block !important;
-            animation: fadeIn 0.25s ease-out;
+            display: block;
+            animation: fadeIn 0.3s ease-out;
         }
 
         @keyframes fadeIn {
@@ -165,8 +195,7 @@
             to { opacity: 1; }
         }
 
-        #viewer-content canvas,
-        #viewer-content svg {
+        #viewer-content canvas {
             max-width: 100%;
             max-height: 100%;
             width: auto;
@@ -176,74 +205,48 @@
 
         /* Embed Mode */
         body[data-mode="embed"] { 
-            background-color: var(--archival-surface, #EFE9DC) !important;
-            padding: 0 !important; 
-            margin: 0 !important;
-            display: block !important;
-            overflow: hidden !important;
-            width: 100vw !important;
-            height: 100vh !important;
+            background-color: #F7F3EB;
+            padding: 0; 
+            display: block;
+            overflow: hidden;
         }
-        body[data-mode="embed"] .noise-layer {
-            display: block !important;
-            opacity: 0.04 !important;
-            pointer-events: none !important;
-        }
-        body[data-mode="embed"] * {
-            cursor: auto !important;
-        }
-        body[data-mode="embed"] .custom-cursor,
-        body[data-mode="embed"] .custom-cursor-trail,
+        
         body[data-mode="embed"] #fullscreen-viewer,
-        body[data-mode="embed"] #fullscreen-btn,
-        body[data-mode="embed"] #embed-modal,
-        body[data-mode="embed"] header,
-        body[data-mode="embed"] footer,
-        body[data-mode="embed"] section,
-        body[data-mode="embed"] .drafting-dots,
-        body[data-mode="embed"] main > *:not(#specimen-viewport-card) {
+        body[data-mode="embed"] #fullscreen-btn {
             display: none !important;
         }
         body[data-mode="embed"] main { 
-            max-width: none !important; 
-            width: 100vw !important; 
-            height: 100vh !important; 
-            margin: 0 !important; 
-            padding: 0 !important;
-            display: block !important;
-            grid-template-columns: none !important;
-            gap: 0 !important;
-            space-y: 0 !important;
-            overflow: hidden !important;
+            max-width: none; 
+            width: 100vw; 
+            height: 100vh; 
+            margin: 0; 
+            display: block;
+            gap: 0;
+            space-y: 0;
         }
-        body[data-mode="embed"] #specimen-viewport-card {
-            border: none !important;
-            background: transparent !important;
-            box-shadow: none !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            max-width: 100vw !important;
-            max-height: 100vh !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-            aspect-ratio: auto !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            position: relative !important;
-            overflow: hidden !important;
+        body[data-mode="embed"] section,
+        body[data-mode="embed"] #specimen-metadata,
+        body[data-mode="embed"] footer { 
+            display: none !important; 
         }
+        body[data-mode="embed"] .surface-card { 
+            border: none; 
+            box-shadow: none; 
+            background: transparent; 
+            height: 100%; 
+            width: 100%;
+            padding: 0;
+            border-radius: 0;
+        }
+        body[data-mode="embed"] .absolute { display: none; }
         body[data-mode="embed"] #render-target {
-            width: 100% !important;
-            height: 100% !important;
-            margin: 0 !important;
-            padding: 8px !important;
-            min-height: 0 !important;
-            box-sizing: border-box !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+            width: 100%;
+            height: 100%;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
         }
         body[data-mode="embed"] #render-target canvas {
             max-width: 100% !important;
@@ -254,34 +257,23 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-start p-4 sm:p-8">
-    <script>
-        (function() {
-            var params = new URLSearchParams(window.location.search);
-            if (params.get('mode') === 'embed') { document.body.dataset.mode = 'embed'; }
-        })();
-    </script>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8">
 
-    <!-- Tactile Cursor -->
-    <div class="custom-cursor" aria-hidden="true"></div>
-    <div class="custom-cursor-trail" aria-hidden="true"></div>
-
-    <!-- Paper Grain Noise -->
     <svg class="noise-layer" aria-hidden="true">
         <filter id="fractalNoise">
-            <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch"/>
+            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
         </filter>
         <rect width="100%" height="100%" filter="url(#fractalNoise)"/>
     </svg>
 
-    <!-- Fullscreen Viewer Modal (Centered Layout Matching Geometry Vault) -->
+    <!-- Fullscreen Viewer Modal -->
     <div id="fullscreen-viewer" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-[#2A2520] bg-opacity-95 backdrop-blur-sm cursor-pointer"></div>
-        <div class="absolute inset-0 flex items-center justify-center p-4 sm:p-8 pointer-events-none">
+        <div class="absolute inset-0 flex items-center justify-center p-8 pointer-events-none">
             <div class="relative w-full h-full max-w-7xl max-h-[90vh] flex flex-col pointer-events-auto">
                 <div class="flex justify-between items-center mb-4 px-2">
                     <div class="flex items-center gap-4">
-                        <span id="viewer-title" class="font-tech text-[12px] text-[#E8E0D0] font-semibold">BOTANICAL SPECIMEN VIEWER</span>
+                        <span id="viewer-title" class="font-tech text-[12px] text-[#E8E0D0]">SPECIMEN VIEWER</span>
                         <span id="viewer-seq" class="font-tech text-[10px] text-[#7A7068]"></span>
                     </div>
                     <div class="flex gap-2">
@@ -296,822 +288,550 @@
                         </button>
                     </div>
                 </div>
-                <div id="viewer-content" class="flex-1 flex items-center justify-center bg-[var(--archival-surface)] rounded-sm border border-[#7A7068] overflow-hidden">
+                <div id="viewer-content" class="flex-1 flex items-center justify-center bg-[#EFE9DC] rounded-sm border border-[#7A7068] overflow-hidden">
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Embed Code Modal -->
-    <div id="embed-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-8 bg-[#0B1120]/80 backdrop-blur-xs">
-        <div class="surface-card max-w-lg w-full p-6 space-y-4 rounded-sm border border-[var(--archival-muted)] bg-[var(--archival-bg)] shadow-lg relative">
-            <div class="flex justify-between items-center border-b border-[var(--archival-muted)] pb-2">
-                <h3 class="font-tech text-xs font-semibold text-[var(--archival-fg)] flex items-center gap-2">
-                    <i class="fa-solid fa-share-nodes text-[var(--archival-accent)]"></i> EMBED_INTEGRATION_PROTOCOL
-                </h3>
-                <button id="embed-modal-close" class="font-tech text-[10px] text-[var(--archival-meta)] hover:text-[var(--archival-accent)] cursor-pointer">
-                    [ CLOSE ]
-                </button>
-            </div>
-            <p class="font-tech text-[10px] text-[var(--archival-meta)] leading-relaxed">
-                Copy the HTML iframe integration snippet below into your web publication or CMS plate:
-            </p>
-            <textarea id="embed-modal-textarea" readonly class="w-full h-24 p-2 text-xs font-mono bg-[var(--archival-surface)] border border-[var(--archival-muted)] rounded-xs resize-none select-all text-[var(--archival-fg)]"></textarea>
-            <div class="flex justify-end gap-2 pt-2 border-t border-[var(--archival-muted)]">
-                <button id="embed-modal-copy-btn" class="font-tech text-[10px] px-3 py-1.5 bg-[var(--archival-surface)] border border-[var(--archival-muted)] hover:border-[var(--archival-accent)] text-[var(--archival-fg)] hover:text-[var(--archival-accent)] font-semibold transition-all cursor-pointer">
-                    <i class="fa-solid fa-copy text-[9px]"></i> [ COPY_SNIPPET ]
-                </button>
             </div>
         </div>
     </div>
 
     <!-- Main Workspace -->
-    <main class="max-w-[82rem] w-full space-y-6 relative z-10 grid grid-cols-1 md:grid-cols-5 gap-6">
+    <main class="max-w-[80rem] w-full space-y-6 relative z-10 grid grid-cols-1 md:grid-cols-5 gap-6">
         
         <!-- Left: Specimen Plate Viewport (Col 1-3) -->
-        <div id="specimen-viewport-card" class="surface-card w-full aspect-square md:aspect-auto md:h-full md:col-span-3 rounded-sm p-8 overflow-hidden relative group">
-            
-            <!-- Subtle Drafting Dot Matrix -->
-            <div class="drafting-dots absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTIyLCAxMTIsIDEwNCwgMC4xKSIvPjwvc3ZnPg==')] opacity-80 pointer-events-none"></div>
-
-            <button id="fullscreen-btn" class="absolute top-4 right-4 font-tech text-[10px] text-[var(--archival-fg)] hover:text-[var(--archival-accent)] flex items-center justify-center gap-2 px-3 py-2 border border-[var(--archival-muted)] hover:border-[var(--archival-accent)] bg-[var(--archival-surface)] z-10 transition-all">
+        <div class="surface-card w-full aspect-square md:aspect-auto md:h-full md:col-span-3 rounded-sm p-8 overflow-hidden relative group">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTIyLCAxMTIsIDEwNCwgMC4xKSIvPjwvc3ZnPg==')] opacity-80 pointer-events-none"></div>
+            <button id="fullscreen-btn" class="absolute top-4 right-4 font-tech text-[10px] text-[#2A2520] hover:text-[#8B1A1A] flex items-center justify-center gap-2 px-3 py-2 border border-[#DDD5C5] hover:border-[#8B1A1A] bg-[#EFE9DC] z-10">
                 <i class="fa-solid fa-expand"></i> [ EXPAND ]
             </button>
-
-            <!-- Specimen Vector Display Target -->
-            <div id="render-target" class="w-full h-full flex items-center justify-center">
-                <div class="font-tech text-[10px] text-[var(--archival-meta)] flex items-center gap-2">
-                    <i class="fa-solid fa-circle-notch fa-spin text-[var(--archival-accent)]"></i> SYNTHESIZING BOTANICAL SPECIMEN...
-                </div>
-            </div>
+            <div id="render-target" class="w-full h-full flex items-center justify-center"></div>
         </div>
 
-        <!-- Right: Control Matrix & Morphometrics (Col 4-5) -->
-        <section class="surface-card p-6 rounded-sm space-y-5 md:col-span-2 flex flex-col justify-between">
-            <div class="space-y-5">
-                
-                <!-- Panel Header -->
-                <header class="flex items-center justify-between border-b border-[var(--archival-muted)] pb-3">
-                    <h1 class="font-tech text-[11px] font-bold text-[var(--archival-fg)] flex items-center gap-2">
-                        <i class="fa-solid fa-seedling text-xs text-[var(--archival-accent)]"></i>
-                        <span>FLOWER VAULT // ARCHIVAL ENGINE</span>
+        <!-- Right: Control Matrix (Col 4-5) -->
+        <section class="surface-card p-6 rounded-sm space-y-6 md:col-span-2 flex flex-col justify-between">
+            <div class="space-y-6">
+                <header class="flex items-center justify-between border-b border-[#DDD5C5] pb-4">
+                    <h1 class="font-tech text-[11px] font-semibold text-[#2A2520] flex items-center gap-2">
+                        <i class="fa-solid fa-seedling text-xs"></i> Synthesis Engine
                     </h1>
-                    <div class="flex items-center gap-2">
-                        <a href="/docs.html" class="font-tech text-[9px] text-[var(--archival-meta)] hover:text-[var(--archival-accent)] transition-colors flex items-center gap-1 px-2 py-0.5 border border-[var(--archival-muted)] rounded-sm bg-[var(--archival-bg)]">
-                            <i class="fa-solid fa-book-open text-[8px]"></i> [ DOCS ]
-                        </a>
-                        <span class="font-tech text-[9px] px-2 py-0.5 bg-[var(--archival-bg)] border border-[var(--archival-muted)] text-[var(--archival-meta)] font-semibold">
-                            V1.0
-                        </span>
-                    </div>
                 </header>
 
-                <!-- 1. Aspect Ratio Matrix -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="font-tech text-[9px] text-[var(--archival-meta)] font-semibold">01 // ASPECT_RATIO_MATRIX</label>
-                        <span class="font-tech text-[8px] text-[var(--archival-meta)]">TARGET VIEW</span>
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="font-tech text-[9px] text-[#7A7068]">FORMAT_MATRIX</label>
+                        <div class="grid grid-cols-3 gap-2" id="format-matrix">
+                            <button class="ratio-btn py-2 text-[10px] font-tech font-semibold bg-[#E8E0D0]" data-w="9" data-h="16">9:16</button>
+                            <button class="ratio-btn py-2 text-[10px] font-tech font-semibold bg-[#E8E0D0]" data-w="2" data-h="3">2:3</button>
+                            <button class="ratio-btn py-2 text-[10px] font-tech font-semibold bg-[#E8E0D0]" data-w="3" data-h="4">3:4</button>
+                            
+                            <button class="ratio-btn py-2 text-[10px] font-tech font-semibold bg-[#E8E0D0]" data-w="4" data-h="5">4:5</button>
+                            <button class="ratio-btn py-2 text-[10px] font-tech font-semibold bg-[#E8E0D0]" data-w="1" data-h="1" data-active="true">1:1</button>
+                            <button class="ratio-btn py-2 text-[10px] font-tech font-semibold bg-[#E8E0D0]" data-w="5" data-h="4">5:4</button>
+                            
+                            <button class="ratio-btn py-2 text-[10px] font-tech font-semibold bg-[#E8E0D0]" data-w="4" data-h="3">4:3</button>
+                            <button class="ratio-btn py-2 text-[10px] font-tech font-semibold bg-[#E8E0D0]" data-w="3" data-h="2">3:2</button>
+                            <button class="ratio-btn py-2 text-[10px] font-tech font-semibold bg-[#E8E0D0]" data-w="16" data-h="9">16:9</button>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-3 gap-1.5" id="format-matrix">
-                        <button class="ratio-btn py-1.5 text-[9px] font-tech font-semibold bg-[var(--archival-bg)]" data-w="9" data-h="16">9:16</button>
-                        <button class="ratio-btn py-1.5 text-[9px] font-tech font-semibold bg-[var(--archival-bg)]" data-w="2" data-h="3">2:3</button>
-                        <button class="ratio-btn py-1.5 text-[9px] font-tech font-semibold bg-[var(--archival-bg)]" data-w="3" data-h="4">3:4</button>
-                        
-                        <button class="ratio-btn py-1.5 text-[9px] font-tech font-semibold bg-[var(--archival-bg)]" data-w="4" data-h="5">4:5</button>
-                        <button class="ratio-btn py-1.5 text-[9px] font-tech font-semibold bg-[var(--archival-bg)]" data-w="1" data-h="1" data-active="true">1:1</button>
-                        <button class="ratio-btn py-1.5 text-[9px] font-tech font-semibold bg-[var(--archival-bg)]" data-w="5" data-h="4">5:4</button>
-                        
-                        <button class="ratio-btn py-1.5 text-[9px] font-tech font-semibold bg-[var(--archival-bg)]" data-w="4" data-h="3">4:3</button>
-                        <button class="ratio-btn py-1.5 text-[9px] font-tech font-semibold bg-[var(--archival-bg)]" data-w="3" data-h="2">3:2</button>
-                        <button class="ratio-btn py-1.5 text-[9px] font-tech font-semibold bg-[var(--archival-bg)]" data-w="16" data-h="9">16:9</button>
+
+                    <div class="relative group pt-2">
+                        <i class="fa-solid fa-terminal absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7068] group-focus-within:text-[#8B1A1A] transition-colors mt-1"></i>
+                        <input type="text" id="seed-input" placeholder="Inject narrative sequence..." 
+                               class="w-full pl-10 pr-4 py-3 text-sm font-medium"
+                               autocomplete="off" maxlength="128" spellcheck="false" value="Solitary Bloom in Late Autumn Mist">
+                    </div>
+
+                    <div class="relative group">
+                        <i class="fa-solid fa-fingerprint absolute left-4 top-1/2 -translate-y-1/2 text-[#7A7068] group-focus-within:text-[#8B1A1A] transition-colors"></i>
+                        <input type="text" id="id-load-input" placeholder="Recover from ID (e.g. FLV-B9-03S1UJ)..." 
+                               class="w-full pl-10 pr-4 py-3 text-sm font-medium"
+                               autocomplete="off" maxlength="18" spellcheck="false">
                     </div>
                 </div>
-
-                <!-- 2. Narrative Injection & Seed Control -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label for="seed-input" class="font-tech text-[9px] text-[var(--archival-meta)] font-semibold">02 // NARRATIVE_INJECTION_SEED</label>
-                        <span class="font-tech text-[8px] text-[var(--archival-meta)]">HASH PERSISTENCE</span>
-                    </div>
-                    
-                    <div class="relative">
-                        <input id="seed-input" type="text" value="Solitary Bloom in Late Autumn Mist" placeholder="Inject narrative sequence (e.g. essay prompt, title, poem)..."
-                               class="w-full bg-[var(--archival-bg)] border border-[var(--archival-muted)] rounded-xs py-2 px-3 text-xs font-mono text-[var(--archival-fg)] focus:outline-none focus:border-[var(--archival-accent)] transition-all">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2 pt-1">
-                        <button id="random-btn" class="font-tech text-[10px] py-2 px-3 bg-[var(--archival-bg)] border border-[var(--archival-muted)] hover:border-[var(--archival-accent)] text-[var(--archival-fg)] hover:text-[var(--archival-accent)] font-semibold transition-all flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-dice text-[9px]"></i> [ RANDOM NARRATIVE ]
-                        </button>
-
-                        <div class="flex items-center gap-1">
-                            <input id="id-load-input" type="text" placeholder="FLV-XX-XXXXXX"
-                                   class="w-full bg-[var(--archival-bg)] border border-[var(--archival-muted)] rounded-xs py-2 px-2 text-[10px] font-mono text-[var(--archival-fg)] focus:outline-none focus:border-[var(--archival-accent)] uppercase">
-                            <button id="id-load-btn" class="font-tech text-[9px] py-2 px-2 bg-[var(--archival-bg)] border border-[var(--archival-muted)] hover:border-[var(--archival-accent)] text-[var(--archival-meta)] hover:text-[var(--archival-fg)] font-semibold shrink-0">
-                                LOAD
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. Botanical Morphometrics & Telemetry Card -->
-                <div class="p-3.5 bg-[var(--archival-bg)] border border-[var(--archival-muted)] rounded-sm space-y-2.5">
-                    <div class="flex justify-between items-center border-b border-[var(--archival-muted)] pb-2">
-                        <span class="font-tech text-[9px] text-[var(--archival-meta)] font-bold">03 // BOTANICAL_TELEMETRY</span>
-                        <span id="accession-badge" class="font-tech text-[10px] text-[var(--archival-accent)] font-bold">FLV-00-000000</span>
-                    </div>
-
-                    <div class="space-y-1">
-                        <div class="font-tech text-[9px] text-[var(--archival-meta)] uppercase">DERIVED BOTANICAL BINOMEN</div>
-                        <div id="taxon-name" class="font-serif italic text-base font-bold text-[var(--archival-fg)] leading-tight">Floragemma silvatica</div>
-                        <div id="taxon-family" class="font-tech text-[9px] text-[var(--archival-meta)]">Family: Ranunculaceae</div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-x-2 gap-y-1.5 pt-1 border-t border-[var(--archival-muted)] text-[9px] font-tech">
-                        <div>
-                            <span class="text-[var(--archival-meta)]">PLANT HABIT:</span>
-                            <span id="metric-habit" class="text-[var(--archival-fg)] font-semibold block">Woody (Ligneous)</span>
-                        </div>
-                        <div>
-                            <span class="text-[var(--archival-meta)]">PHYLLOTAXY:</span>
-                            <span id="metric-phyllotaxy" class="text-[var(--archival-fg)] font-semibold block">Alternate Cauline</span>
-                        </div>
-                        <div>
-                            <span class="text-[var(--archival-meta)]">FOLIAR LAMINA:</span>
-                            <span id="metric-leaf" class="text-[var(--archival-fg)] font-semibold block">65mm (Pinnate)</span>
-                        </div>
-                        <div>
-                            <span class="text-[var(--archival-meta)]">FLORAL MERISM:</span>
-                            <span id="metric-merism" class="text-[var(--archival-fg)] font-semibold block">5-merous Petals</span>
-                        </div>
-                        <div>
-                            <span class="text-[var(--archival-meta)]">PIGMENT CHROMA:</span>
-                            <span id="metric-pigment" class="text-[var(--archival-fg)] font-semibold block">Hue 340° / 35°</span>
-                        </div>
-                        <div>
-                            <span class="text-[var(--archival-meta)]">STEM DYNAMICS:</span>
-                            <span id="metric-stem" class="text-[var(--archival-fg)] font-semibold block">3 Axis (Bend: 60%)</span>
-                        </div>
-                    </div>
-
-                    <div class="pt-1 border-t border-[var(--archival-muted)] flex justify-between items-center text-[9px] font-tech text-[var(--archival-meta)]">
-                        <span>PTR HASH:</span>
-                        <span id="metric-ptr" class="text-[var(--archival-fg)] font-semibold">0x00000000</span>
-                    </div>
-                </div>
-
-                <!-- 4. Archival Export Protocol -->
-                <div class="space-y-2 pt-1">
-                    <div class="flex justify-between items-center">
-                        <label class="font-tech text-[9px] text-[var(--archival-meta)] font-semibold">04 // EXPORT_INTERFACE</label>
-                        <span class="font-tech text-[8px] text-[var(--archival-meta)]">STANDALONE ASSETS</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <button id="svg-btn" class="font-tech text-[10px] py-2 px-3 bg-[var(--archival-surface)] border border-[var(--archival-muted)] hover:border-[var(--archival-accent)] text-[var(--archival-fg)] hover:text-[var(--archival-accent)] font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-                            <i class="fa-solid fa-code text-[9px]"></i> [ SVG SPECIMEN ]
-                        </button>
-                        <button id="png-btn" class="font-tech text-[10px] py-2 px-3 bg-[var(--archival-surface)] border border-[var(--archival-muted)] hover:border-[var(--archival-accent)] text-[var(--archival-fg)] hover:text-[var(--archival-accent)] font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-                            <i class="fa-solid fa-image text-[9px]"></i> [ PNG 300DPI ]
-                        </button>
-                    </div>
-
-                    <button id="embed-btn" class="w-full font-tech text-[10px] py-2 px-3 bg-[var(--archival-bg)] border border-[var(--archival-muted)] hover:border-[var(--archival-accent)] text-[var(--archival-fg)] hover:text-[var(--archival-accent)] font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i class="fa-solid fa-share-nodes text-[9px]"></i> [ GENERATE EMBED PROTOCOL ]
-                    </button>
-                </div>
-
             </div>
 
-            <!-- Footer Monograph Meta -->
-            <footer class="pt-4 border-t border-[var(--archival-muted)] mt-5">
-                <div class="flex justify-between items-center font-tech text-[9px] text-[var(--archival-meta)]">
-                    <span>BOTANICAL_MONOGRAPH // REV 1.0</span>
-                    <a href="https://github.com/1999AZZAR/flower-vault" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--archival-accent)] transition-colors flex items-center gap-1">
-                        <i class="fa-brands fa-github"></i> GITHUB
-                    </a>
+            <footer class="space-y-4 pt-4 border-t border-[#DDD5C5]">
+                <div class="flex justify-between items-center bg-[#E8E0D0] px-3 py-2 border border-[#DDD5C5]">
+                    <span id="specimen-id" class="font-tech text-[10px] text-[#2A2520] font-semibold">SEQ: 00-000000</span>
+                    <span id="hash-metric" class="font-tech text-[9px] text-[#7A7068]">AWAITING...</span>
                 </div>
+                
+                <div class="flex gap-2">
+                    <button id="copy-btn" class="font-tech text-[10px] text-[#2A2520] hover:text-[#8B1A1A] transition-all flex items-center justify-center gap-2 px-4 py-2 border border-[#DDD5C5] hover:border-[#8B1A1A] bg-[#E8E0D0] w-1/2">
+                        <i class="fa-solid fa-code"></i> [ SVG ]
+                    </button>
+                    <button id="png-btn" class="font-tech text-[10px] text-[#2A2520] hover:text-[#8B1A1A] transition-all flex items-center justify-center gap-2 px-4 py-2 border border-[#DDD5C5] hover:border-[#8B1A1A] bg-[#E8E0D0] w-1/2">
+                        <i class="fa-solid fa-download"></i> [ PNG ]
+                    </button>
+                </div>
+                <button id="embed-btn" class="font-tech text-[10px] text-[#7A7068] hover:text-[#8B1A1A] transition-all flex items-center justify-center gap-2 px-4 py-2 border border-[#DDD5C5] hover:border-[#8B1A1A] bg-[#E8E0D0] w-full">
+                    <i class="fa-solid fa-share-nodes"></i> [ GENERATE EMBED ]
+                </button>
             </footer>
         </section>
 
-        <!-- Monograph Documentation Details (Full Width Col 1-5) -->
-        <article class="surface-card p-6 rounded-sm space-y-4 md:col-span-5 border border-[var(--archival-muted)] text-[var(--archival-fg)]">
-            <h2 class="font-tech text-xs font-bold tracking-wider text-[var(--archival-fg)] border-b border-[var(--archival-muted)] pb-2 flex items-center gap-2">
-                <i class="fa-solid fa-book text-[10px] text-[var(--archival-accent)]"></i> ARCHIVAL BOTANY MONOGRAPH & ENGINE SPECIFICATIONS
-            </h2>
+        <!-- Archival Metadata Section for SEO/AIO -->
+        <section id="specimen-metadata" class="md:col-span-5 surface-card p-8 rounded-sm space-y-8 mt-6">
+            <div class="prose max-w-none">
+                <h2 class="font-tech text-sm font-semibold border-b border-[#DDD5C5] pb-2 text-[#8B1A1A]">01. ARCHIVAL_BOTANY_OVERVIEW</h2>
+                <p class="text-sm text-[#2A2520] leading-relaxed">
+                    Flower Vault is an archival procedural botany synthesis engine and digital herbarium plate repository designed for technical minimalism and structural honesty. Adapted from Lingdong Huang's nonflowers (2018), it recreates the aesthetic of Chinese Gongbi watercolor paintings and classical natural history monographs.
+                </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs leading-relaxed">
-                <div class="space-y-2">
-                    <h3 class="font-tech text-[11px] font-semibold text-[var(--archival-fg)]">01. ARCHIVAL_BOTANY_OVERVIEW</h3>
-                    <p class="text-[var(--archival-meta)] leading-normal">
-                        Flower Vault is a procedural botanical synthesis engine and digital herbarium plate repository designed for structural clarity and botanical authenticity. Adapted from Lingdong Huang's nonflowers (2018), it recreates the aesthetic of Chinese Gongbi watercolor paintings and classical natural history monographs.
-                    </p>
-                    
-                    <h3 class="font-tech text-[11px] font-semibold text-[var(--archival-fg)] pt-2">02. PROCEDURAL_PHYLOGENY_LOGIC</h3>
-                    <p class="text-[var(--archival-meta)] leading-normal">
-                        Every specimen is synthesized deterministically from narrative input via an immutable pipeline:
-                        <code class="block my-1.5 p-1.5 bg-[var(--archival-bg)] font-mono text-[10px] text-[var(--archival-fg)] border border-[var(--archival-muted)]">
-                            Narrative Sequence → FNV-1a Hash → Seed → Accession ID (FLV-XX-XXXXXX) → Botanical Binomen
-                        </code>
-                        Parameters govern branching depth, rational Bézier curvature, node phyllotaxy, and petal counts. The entire accession can be losslessly recovered bidirectional from its ID.
-                    </p>
-                </div>
+                <h2 class="font-tech text-sm font-semibold border-b border-[#DDD5C5] pb-2 text-[#8B1A1A] mt-8">02. PROCEDURAL_BOTANY_LOGIC</h2>
+                <p class="text-sm text-[#2A2520] leading-relaxed">
+                    By injecting narrative sequences into the matrix, the engine hashes the input to determine plant habit (Woody vs. Herbal), foliar venation, corolla merism, and pigment washes. Every specimen is an immutable archival record, traceable via its accession identifier (e.g. FLV-B9-03S1UJ) and memory pointer hash.
+                </p>
 
-                <div class="space-y-2">
-                    <h3 class="font-tech text-[11px] font-semibold text-[var(--archival-fg)]">03. EMBED_INTEGRATION_PROTOCOL</h3>
-                    <p class="text-[var(--archival-meta)] leading-normal">
-                        Using the <code class="font-mono bg-[var(--archival-bg)] px-1 py-0.5 border border-[var(--archival-muted)]">?mode=embed</code> parameter, Flower Vault strips all chrome and renders a pure, distraction-free specimen plate. External applications can control the engine in real-time via the <code class="font-mono bg-[var(--archival-bg)] px-1 py-0.5 border border-[var(--archival-muted)]">postMessage</code> API.
-                    </p>
+                <h2 class="font-tech text-sm font-semibold border-b border-[#DDD5C5] pb-2 text-[#8B1A1A] mt-8">03. ARCHIVAL_EXPORT_PROTOCOL</h2>
+                <p class="text-sm text-[#2A2520] leading-relaxed">
+                    Specimens can be exported as high-resolution standalone SVG or 300 DPI PNG files adhering to the Swiss-Archival design system. The system employs an organic paper grain and framing stamps to mimic 300gsm cold-press xuan paper, ensuring visual consistency across digital and physical mediums.
+                </p>
 
-                    <h3 class="font-tech text-[11px] font-semibold text-[var(--archival-fg)] pt-2">04. PROGRAMMATIC_ACCESS_SDK</h3>
-                    <p class="text-[var(--archival-meta)] leading-normal">
-                        The engine exposes full client-side and server-side JavaScript access via <code class="font-mono bg-[var(--archival-bg)] px-1 py-0.5 border border-[var(--archival-muted)]">window.FlowerDraw</code> without external dependencies. Developers can synthesize specimens, extract morphometrics, and generate archival plates programmatically.
-                    </p>
+                <h2 class="font-tech text-sm font-semibold border-b border-[#DDD5C5] pb-2 text-[#8B1A1A] mt-8">04. EMBED_INTEGRATION_PROTOCOL</h2>
+                <p class="text-sm text-[#2A2520] leading-relaxed">
+                    Flower Vault functions as an embeddable service. Utilizing the <code>mode=embed</code> URL parameter, the interface is reduced to a strictly archival specimen view with a bone-colored background, optimized for iframe integration. Developers can control the synthesis engine in real-time via the <code>postMessage</code> API.
+                </p>
+
+                <h2 class="font-tech text-sm font-semibold border-b border-[#DDD5C5] pb-2 text-[#8B1A1A] mt-8">05. PROGRAMMATIC_ARCHIVAL_ACCESS</h2>
+                <p class="text-sm text-[#2A2520] leading-relaxed">
+                    The engine exposes zero-dependency JavaScript access via <code>window.FlowerDraw</code>. Developers can synthesize botanical specimens, extract morphometrics, and generate archival plates programmatically in Node.js or client-side environments.
+                </p>
+
+                <div class="mt-8 pt-4 border-t border-[#DDD5C5]">
+                    <a href="/docs.html" class="font-tech text-[10px] text-[#7A7068] hover:text-[#8B1A1A] transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-file-code"></i> READ_FULL_DOCUMENTATION_PROTOCOL
+                    </a>
                 </div>
             </div>
-        </article>
-
+        </section>
+        
+        <footer class="md:col-span-5 text-center py-12">
+            <p class="font-tech text-[10px] text-[#7A7068]">FLOWER_VAULT &copy; 2026 | AZZAR_BUDIYANTO</p>
+        </footer>
     </main>
 
     <!-- Core Engine Scripts -->
-    <script src="js/flowerdraw.js?v=1.0.1"></script>
+    <script src="js/flowerdraw.js?v=1.0.2"></script>
     <script>
-        (function() {
-            // Configuration & State
-            const STATE = {
-                currentNarrative: 'Solitary Bloom in Late Autumn Mist',
-                currentSeed: 'Solitary Bloom in Late Autumn Mist',
-                currentTaxon: 'Floragemma silvatica',
-                currentFamily: 'Ranunculaceae',
-                currentId: '',
-                currentRatio: { w: 1, h: 1 },
-                currentSpecimen: null,
-                palette: {
-                    stroke: '#2A2520',
-                    accent: '#8B1A1A',
-                    bg: '#EFE9DC',
-                    meta: '#7A7068'
-                }
+        const DOM = {
+            target: document.getElementById('render-target'),
+            seedInput: document.getElementById('seed-input'),
+            idLoadInput: document.getElementById('id-load-input'),
+            hashMetric: document.getElementById('hash-metric'),
+            specimenId: document.getElementById('specimen-id'),
+            copyBtn: document.getElementById('copy-btn'),
+            pngBtn: document.getElementById('png-btn'),
+            embedBtn: document.getElementById('embed-btn'),
+            ratioBtns: document.querySelectorAll('.ratio-btn')
+        };
+
+        const CONFIG = {
+            baseResolution: 600,
+            baseExportScale: 2400
+        };
+
+        let currentSpecimen = null;
+
+        const getActiveRatio = () => {
+            const activeBtn = document.querySelector('.ratio-btn[data-active="true"]');
+            if (!activeBtn) return { w: 1, h: 1 };
+            return {
+                w: parseFloat(activeBtn.dataset.w),
+                h: parseFloat(activeBtn.dataset.h)
             };
+        };
 
-            // DOM Elements
-            const DOM = {
-                target: document.getElementById('render-target'),
-                seedInput: document.getElementById('seed-input'),
-                idLoadInput: document.getElementById('id-load-input'),
-                idLoadBtn: document.getElementById('id-load-btn'),
-                randomBtn: document.getElementById('random-btn'),
-                formatMatrix: document.getElementById('format-matrix'),
-                ratioBtns: document.querySelectorAll('.ratio-btn'),
-                accessionBadge: document.getElementById('accession-badge'),
-                taxonName: document.getElementById('taxon-name'),
-                taxonFamily: document.getElementById('taxon-family'),
-                metricHabit: document.getElementById('metric-habit'),
-                metricPhyllotaxy: document.getElementById('metric-phyllotaxy'),
-                metricLeaf: document.getElementById('metric-leaf'),
-                metricMerism: document.getElementById('metric-merism'),
-                metricPigment: document.getElementById('metric-pigment'),
-                metricStem: document.getElementById('metric-stem'),
-                metricPtr: document.getElementById('metric-ptr'),
-                fullscreenBtn: document.getElementById('fullscreen-btn'),
-                fullscreenViewer: document.getElementById('fullscreen-viewer'),
-                viewerContent: document.getElementById('viewer-content'),
-                viewerClose: document.getElementById('viewer-close'),
-                viewerTitle: document.getElementById('viewer-title'),
-                viewerSeq: document.getElementById('viewer-seq'),
-                viewerDownloadSvg: document.getElementById('viewer-download-svg'),
-                viewerDownloadPng: document.getElementById('viewer-download-png'),
-                svgBtn: document.getElementById('svg-btn'),
-                pngBtn: document.getElementById('png-btn'),
-                embedBtn: document.getElementById('embed-btn'),
-                embedModal: document.getElementById('embed-modal'),
-                embedModalTextarea: document.getElementById('embed-modal-textarea'),
-                embedModalClose: document.getElementById('embed-modal-close'),
-                embedModalCopyBtn: document.getElementById('embed-modal-copy-btn'),
-                customCursor: document.querySelector('.custom-cursor'),
-                customCursorTrail: document.querySelector('.custom-cursor-trail')
+        const createDebouncer = (callback, delay) => {
+            let timerId;
+            return (...args) => {
+                clearTimeout(timerId);
+                timerId = setTimeout(() => callback(...args), delay);
             };
+        };
 
-            // Random Narratives for Exploration
-            const SAMPLE_NARRATIVES = [
-                'Solitary Bloom in Late Autumn Mist',
-                'Ancient Pine Branch by the Waterfall',
-                'Fragile Petals on the Mountain Trail',
-                'Wild Orchid Concealed in Bamboo Grove',
-                'Ligneous Roots Clinging to Granite Cliff',
-                'Verdant Shoot Emerging after Spring Rain',
-                'Golden Blossom Illuminated by Twilight',
-                'Drooping Willow Buds beside Still River',
-                'Slender Bellflower in High Alpine Meadow',
-                'Woodland Peony under Dappled Moonlight',
-                'Succulent Thicket along Shaded Valley',
-                'Star-shaped Corolla in Forest Clearing'
-            ];
+        const buttonFeedback = (buttonDom, originalHtml, successHtml) => {
+            buttonDom.innerHTML = successHtml;
+            buttonDom.classList.add('border-[#8B1A1A]', 'text-[#8B1A1A]');
+            setTimeout(() => {
+                buttonDom.innerHTML = originalHtml;
+                buttonDom.classList.remove('border-[#8B1A1A]', 'text-[#8B1A1A]');
+            }, 2000);
+        };
 
-            // Canvas Dimensions based on Aspect Ratio
-            function getCanvasDimensions(ratio) {
-                const base = 700;
-                let w = base;
-                let h = base;
-                if (ratio.w === ratio.h) {
-                    w = 700; h = 700;
-                } else if (ratio.w > ratio.h) {
-                    w = 800;
-                    h = Math.round(800 * (ratio.h / ratio.w));
-                } else {
-                    h = 800;
-                    w = Math.round(800 * (ratio.w / ratio.h));
-                }
-                return { w, h };
+        const handleEmbedExport = async () => {
+            const ratio = getActiveRatio();
+            const baseUrl = window.location.origin + window.location.pathname;
+            const seedParam = DOM.seedInput.value ? `&narrative=${encodeURIComponent(DOM.seedInput.value)}` : "";
+            const idParam = DOM.idLoadInput.value ? `&id=${encodeURIComponent(DOM.idLoadInput.value)}` : "";
+            const embedUrl = `${baseUrl}?mode=embed${seedParam}${idParam}&w=${ratio.w}&h=${ratio.h}`;
+            const iframeCode = `<iframe src="${embedUrl}" width="500" height="500" frameborder="0" style="border:1px solid #DDD5C5; border-radius:4px;"></iframe>`;
+            
+            try {
+                await navigator.clipboard.writeText(iframeCode);
+                buttonFeedback(DOM.embedBtn, DOM.embedBtn.innerHTML, '<i class="fa-solid fa-check"></i> [ EMBED_CODE_COPIED ]');
+            } catch (err) {
+                console.error('Embed export failed', err);
+            }
+        };
+
+        const handleSVGExport = async () => {
+            try {
+                if (!currentSpecimen || !currentSpecimen.canvas) return;
+                const svgMarkup = FlowerDraw.generateSvgPlate(currentSpecimen.canvas, currentSpecimen.metrics);
+                await navigator.clipboard.writeText(svgMarkup);
+                buttonFeedback(DOM.copyBtn, DOM.copyBtn.innerHTML, '<i class="fa-solid fa-check"></i> [ COPIED ]');
+            } catch (error) {
+                console.error('SVG export error:', error);
+            }
+        };
+
+        const handlePNGExport = () => {
+            if (!currentSpecimen || !currentSpecimen.canvas) return;
+
+            const originalHtml = DOM.pngBtn.innerHTML;
+            DOM.pngBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> [ RENDERING ]';
+
+            const ratio = getActiveRatio();
+            let exportW = CONFIG.baseExportScale;
+            let exportH = CONFIG.baseExportScale;
+
+            if (ratio.w > ratio.h) exportH = Math.round(CONFIG.baseExportScale * (ratio.h / ratio.w));
+            else if (ratio.h > ratio.w) exportW = Math.round(CONFIG.baseExportScale * (ratio.w / ratio.h));
+
+            setTimeout(() => {
+                const highRes = FlowerDraw.synthesize(DOM.idLoadInput.value.trim() || DOM.seedInput.value.trim() || "Botanical Specimen", {
+                    width: exportW,
+                    height: exportH,
+                    margin: Math.round(Math.min(exportW, exportH) * 0.024)
+                });
+
+                const downloadLink = document.createElement('a');
+                const safeFileName = (currentSpecimen.accessionId || 'specimen').replace(/[^a-zA-Z0-9_-]/g, '');
+                downloadLink.download = `botanical_specimen_${safeFileName}.png`;
+                downloadLink.href = highRes.canvas.toDataURL('image/png');
+                downloadLink.click();
+
+                buttonFeedback(DOM.pngBtn, originalHtml, '<i class="fa-solid fa-check"></i> [ SAVED ]');
+            }, 30);
+        };
+
+        const renderSynthesisPipeline = () => {
+            const rawSeed = DOM.seedInput.value.trim();
+            const idLoadValue = DOM.idLoadInput.value.trim();
+
+            let seedToSynthesize = rawSeed || "Solitary Bloom in Late Autumn Mist";
+            if (idLoadValue && idLoadValue.includes('-')) {
+                seedToSynthesize = idLoadValue;
             }
 
-            // Synthesize Specimen Pipeline
-            function synthesizeSpecimen() {
-                const idVal = DOM.idLoadInput.value.trim().toUpperCase();
-                const seedVal = DOM.seedInput.value.trim();
+            const ratio = getActiveRatio();
+            let baseW = CONFIG.baseResolution;
+            let baseH = CONFIG.baseResolution;
 
-                let activeInput = seedVal || 'Archival Botanical Specimen';
-                if (idVal && idVal.startsWith('FLV-') && idVal.length === 13) {
-                    activeInput = idVal;
-                }
-
-                STATE.currentNarrative = seedVal;
-                STATE.currentSeed = activeInput;
-
-                const dims = getCanvasDimensions(STATE.currentRatio);
-                const theme = STATE.palette;
-
-                try {
-                    const result = window.FlowerDraw.synthesize(activeInput, {
-                        width: dims.w,
-                        height: dims.h,
-                        bg: theme.bg,
-                        stroke: theme.stroke,
-                        metaColor: theme.meta,
-                        margin: 14
-                    });
-
-                    STATE.currentSpecimen = result;
-                    STATE.currentId = result.accessionId;
-                    STATE.currentTaxon = result.taxon;
-                    STATE.currentFamily = result.family;
-
-                    // Update UI Telemetry
-                    updateTelemetryUI(result.metrics);
-
-                    // Render Specimen into Viewport
-                    renderViewport(result.canvas);
-
-                    // Sync URL parameters without page reload
-                    updateUrlParams();
-
-                } catch (err) {
-                    console.error('FlowerDraw synthesis error:', err);
-                    DOM.target.innerHTML = `<div class="font-tech text-xs text-[var(--archival-accent)]">SYNTHESIS_ERROR: ${err.message}</div>`;
-                }
+            if (ratio.w > ratio.h) {
+                baseH = Math.round(CONFIG.baseResolution * (ratio.h / ratio.w));
+            } else if (ratio.h > ratio.w) {
+                baseW = Math.round(CONFIG.baseResolution * (ratio.w / ratio.h));
             }
 
-            // Update Morphometric Telemetry Panel
-            function updateTelemetryUI(m) {
-                if (!m) return;
-                DOM.accessionBadge.textContent = m.accessionId;
-                DOM.idLoadInput.value = m.accessionId;
-                DOM.taxonName.textContent = m.taxon;
-                DOM.taxonFamily.textContent = `Family: ${m.family} (${m.meaning})`;
-                DOM.metricHabit.textContent = m.habit;
-                DOM.metricPhyllotaxy.textContent = m.phyllotaxy;
-                DOM.metricLeaf.textContent = `${m.leafLength}mm (${m.leafType})`;
-                DOM.metricMerism.textContent = `${m.flowerPetals}-merous (${m.flowerWidth}mm)`;
-                DOM.metricPigment.textContent = m.pigmentChroma;
-                DOM.metricStem.textContent = m.stemDynamics;
-                DOM.metricPtr.textContent = m.hashHex;
-            }
+            const margin = Math.round(Math.min(baseW, baseH) * 0.024);
 
-            // Render Specimen Canvas into Viewport
-            function renderViewport(sourceCanvas) {
-                if (!sourceCanvas) return;
-                DOM.target.innerHTML = '';
-                sourceCanvas.style.maxWidth = '100%';
-                sourceCanvas.style.maxHeight = '100%';
-                sourceCanvas.style.objectFit = 'contain';
-                DOM.target.appendChild(sourceCanvas);
-            }
-
-            // Fullscreen Viewer Functions (Parity with Geometry Vault)
-            const openFullscreenViewer = () => {
-                if (!STATE.currentSpecimen) return;
-                const sourceCanvas = DOM.target.querySelector('canvas');
-                if (!sourceCanvas) return;
-
-                DOM.viewerTitle.textContent = `BOTANICAL SPECIMEN // ${STATE.currentTaxon.toUpperCase()}`;
-                DOM.viewerSeq.textContent = `ACCESSION: ${STATE.currentSpecimen.accessionId} | PTR: ${STATE.currentSpecimen.hashHex}`;
-
-                const cloneCanvas = document.createElement('canvas');
-                cloneCanvas.width = sourceCanvas.width;
-                cloneCanvas.height = sourceCanvas.height;
-                const ctx = cloneCanvas.getContext('2d');
-                ctx.drawImage(sourceCanvas, 0, 0);
-
-                cloneCanvas.style.maxWidth = '100%';
-                cloneCanvas.style.maxHeight = '100%';
-                cloneCanvas.style.width = 'auto';
-                cloneCanvas.style.height = 'auto';
-                cloneCanvas.style.objectFit = 'contain';
-
-                DOM.viewerContent.innerHTML = '';
-                DOM.viewerContent.appendChild(cloneCanvas);
-
-                DOM.fullscreenViewer.classList.add('active');
-                DOM.fullscreenViewer.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            };
-
-            const closeFullscreenViewer = () => {
-                DOM.fullscreenViewer.classList.remove('active');
-                DOM.fullscreenViewer.classList.add('hidden');
-                document.body.style.overflow = '';
-            };
-
-            const handleViewerDownloadSVG = async () => {
-                try {
-                    const canvas = DOM.viewerContent.querySelector('canvas') || DOM.target.querySelector('canvas');
-                    if (!canvas || !STATE.currentSpecimen) return;
-                    const btn = DOM.viewerDownloadSvg;
-                    const origHtml = btn.innerHTML;
-                    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> SAVING';
-
-                    const svgString = window.FlowerDraw.generateSvgPlate(canvas, STATE.currentSpecimen.metrics, {
-                        margin: 14,
-                        stroke: STATE.palette.stroke,
-                        metaColor: STATE.palette.meta
-                    });
-
-                    const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `specimen_${STATE.currentSpecimen.accessionId}_${STATE.currentTaxon.replace(/\s+/g, '_')}.svg`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-
-                    await copyToClipboard(svgString);
-                    buttonFeedback(btn, origHtml, '<i class="fa-solid fa-check"></i> [ SAVED ]');
-                } catch (err) {
-                    console.error('Viewer SVG export error:', err);
-                }
-            };
-
-            const handleViewerDownloadPNG = () => {
-                if (!STATE.currentSpecimen) return;
-                const canvas = DOM.viewerContent.querySelector('canvas') || DOM.target.querySelector('canvas');
-                if (!canvas) return;
-                const btn = DOM.viewerDownloadPng;
-                const origHtml = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> [ RENDERING ]';
-
-                const pngUrl = canvas.toDataURL('image/png');
-                const a = document.createElement('a');
-                a.download = `archival_plate_${STATE.currentSpecimen.accessionId}_${STATE.currentTaxon.replace(/\s+/g, '_')}.png`;
-                a.href = pngUrl;
-                a.click();
-
-                buttonFeedback(btn, origHtml, '<i class="fa-solid fa-check"></i> [ PNG SAVED ]');
-            };
-
-            // Fullscreen viewer event listeners
-            DOM.fullscreenBtn.addEventListener('click', openFullscreenViewer);
-            DOM.viewerClose.addEventListener('click', closeFullscreenViewer);
-            DOM.viewerDownloadSvg.addEventListener('click', handleViewerDownloadSVG);
-            DOM.viewerDownloadPng.addEventListener('click', handleViewerDownloadPNG);
-
-            // Close modal on Escape
-            window.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && DOM.fullscreenViewer.classList.contains('active')) {
-                    closeFullscreenViewer();
-                }
+            currentSpecimen = FlowerDraw.synthesize(seedToSynthesize, {
+                width: baseW,
+                height: baseH,
+                margin: margin,
+                bg: '#EFE9DC',
+                stroke: '#2A2520',
+                metaColor: '#7A7068'
             });
 
-            // Close modal when clicking outside modal window
-            DOM.fullscreenViewer.addEventListener('click', (e) => {
-                if (!e.target.closest('.max-w-7xl')) {
-                    closeFullscreenViewer();
-                }
-            });
+            DOM.target.innerHTML = '';
+            DOM.target.appendChild(currentSpecimen.canvas);
 
-            // Button Feedback Animation Helper
-            function buttonFeedback(buttonEl, originalHtml, feedbackHtml, duration = 2000) {
-                buttonEl.innerHTML = feedbackHtml;
-                setTimeout(() => {
-                    buttonEl.innerHTML = originalHtml;
-                }, duration);
-            }
+            DOM.specimenId.textContent = `SEQ: ${currentSpecimen.accessionId}`;
+            DOM.hashMetric.textContent = `PTR: ${currentSpecimen.hashHex}`;
 
-            // Sync URL Query Parameters
-            function updateUrlParams() {
-                if (document.body.dataset.mode === 'embed') return;
+            // Sync URL parameters
+            if (document.body.dataset.mode !== 'embed') {
                 const url = new URL(window.location);
-                if (STATE.currentId) {
-                    url.searchParams.set('id', STATE.currentId);
+                if (DOM.seedInput.value) {
+                    url.searchParams.set('narrative', DOM.seedInput.value);
+                    url.searchParams.delete('id');
+                } else if (DOM.idLoadInput.value) {
+                    url.searchParams.set('id', DOM.idLoadInput.value);
+                    url.searchParams.delete('narrative');
                 }
-                if (STATE.currentNarrative) {
-                    url.searchParams.set('narrative', STATE.currentNarrative);
-                }
-                url.searchParams.set('w', STATE.currentRatio.w);
-                url.searchParams.set('h', STATE.currentRatio.h);
+                url.searchParams.set('w', ratio.w);
+                url.searchParams.set('h', ratio.h);
                 window.history.replaceState({}, '', url);
             }
 
-            // Aspect Ratio Matrix Selection
-            DOM.ratioBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    DOM.ratioBtns.forEach(b => b.removeAttribute('data-active'));
-                    btn.setAttribute('data-active', 'true');
-                    STATE.currentRatio = {
-                        w: parseFloat(btn.dataset.w),
-                        h: parseFloat(btn.dataset.h)
-                    };
-                    synthesizeSpecimen();
-                });
-            });
-
-            // Narrative Input Events
-            let debounceTimer = null;
-            DOM.seedInput.addEventListener('input', () => {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => {
-                    DOM.idLoadInput.value = '';
-                    synthesizeSpecimen();
-                }, 350);
-            });
-
-            DOM.randomBtn.addEventListener('click', () => {
-                const choice = SAMPLE_NARRATIVES[Math.floor(Math.random() * SAMPLE_NARRATIVES.length)];
-                DOM.seedInput.value = choice;
-                DOM.idLoadInput.value = '';
-                synthesizeSpecimen();
-            });
-
-            DOM.idLoadBtn.addEventListener('click', () => {
-                synthesizeSpecimen();
-            });
-
-            DOM.idLoadInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    synthesizeSpecimen();
-                }
-            });
-
-            // Export 1: Standalone Vector SVG Document
-            DOM.svgBtn.addEventListener('click', async () => {
-                if (!STATE.currentSpecimen) return;
-                const canvas = DOM.target.querySelector('canvas');
-                if (!canvas) return;
-
-                const origHtml = DOM.svgBtn.innerHTML;
-                DOM.svgBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> [ SAVING ]';
-
-                const svgContent = window.FlowerDraw.generateSvgPlate(canvas, STATE.currentSpecimen.metrics, {
-                    margin: 14,
-                    stroke: STATE.palette.stroke,
-                    metaColor: STATE.palette.meta
-                });
-
-                const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `specimen_${STATE.currentSpecimen.accessionId}_${STATE.currentTaxon.replace(/\s+/g, '_')}.svg`;
-                a.click();
-                URL.revokeObjectURL(url);
-
-                await copyToClipboard(svgContent);
-                buttonFeedback(DOM.svgBtn, origHtml, '<i class="fa-solid fa-check"></i> [ SVG SAVED ]');
-            });
-
-            // Export 2: PNG 300DPI Render with Paper Grain
-            DOM.pngBtn.addEventListener('click', () => {
-                if (!STATE.currentSpecimen) return;
-                const canvas = DOM.target.querySelector('canvas');
-                if (!canvas) return;
-
-                const origHtml = DOM.pngBtn.innerHTML;
-                DOM.pngBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> [ RENDERING ]';
-
-                const pngUrl = canvas.toDataURL('image/png');
-                const a = document.createElement('a');
-                a.download = `archival_plate_${STATE.currentSpecimen.accessionId}_${STATE.currentTaxon.replace(/\s+/g, '_')}.png`;
-                a.href = pngUrl;
-                a.click();
-
-                buttonFeedback(DOM.pngBtn, origHtml, '<i class="fa-solid fa-check"></i> [ PNG SAVED ]');
-            });
-
-            // Export 3: Embed Protocol Generation (Parity with Geometry Vault)
-            DOM.embedBtn.addEventListener('click', async () => {
-                const baseUrl = `${window.location.origin}${window.location.pathname}`;
-                const ratio = STATE.currentRatio;
-                const dims = getCanvasDimensions(ratio);
-
-                const idVal = DOM.idLoadInput.value.trim();
-                const seedVal = DOM.seedInput.value.trim();
-
-                let query = `?mode=embed`;
-                if (idVal && idVal.includes('-')) {
-                    query += `&id=${encodeURIComponent(idVal)}`;
-                } else if (seedVal) {
-                    query += `&narrative=${encodeURIComponent(seedVal)}`;
-                } else if (STATE.currentNarrative) {
-                    query += `&narrative=${encodeURIComponent(STATE.currentNarrative)}`;
-                }
-
-                query += `&w=${ratio.w}&h=${ratio.h}`;
-
-                const embedUrl = `${baseUrl}${query}`;
-                const iframeCode = `<iframe src="${embedUrl}" width="${dims.w}" height="${dims.h}" frameborder="0" style="border:1px solid #DDD5C5; border-radius:4px;" title="Flower Vault // ${STATE.currentTaxon || 'Flora'}"></iframe>`;
-
-                const copied = await copyToClipboard(iframeCode);
-                if (copied) {
-                    buttonFeedback(DOM.embedBtn, DOM.embedBtn.innerHTML, '<i class="fa-solid fa-check"></i> [ EMBED_CODE_COPIED ]');
-                } else {
-                    showEmbedModal(iframeCode);
-                }
-            });
-
-            // Embed Modal Handlers
-            function showEmbedModal(code) {
-                DOM.embedModalTextarea.value = code;
-                DOM.embedModal.classList.remove('hidden');
-                DOM.embedModal.classList.add('flex');
-            }
-
-            function hideEmbedModal() {
-                DOM.embedModal.classList.add('hidden');
-                DOM.embedModal.classList.remove('flex');
-            }
-
-            DOM.embedModalClose.addEventListener('click', hideEmbedModal);
-            DOM.embedModalCopyBtn.addEventListener('click', async () => {
-                await copyToClipboard(DOM.embedModalTextarea.value);
-                buttonFeedback(DOM.embedModalCopyBtn, DOM.embedModalCopyBtn.innerHTML, '<i class="fa-solid fa-check"></i> [ COPIED ]');
-            });
-
-            // Robust Clipboard Copy Helper with textarea fallback
-            async function copyToClipboard(text) {
-                if (navigator.clipboard && window.isSecureContext) {
-                    try {
-                        await navigator.clipboard.writeText(text);
-                        return true;
-                    } catch (e) {
-                        // fallback below
+            // PostMessage broadcast to parent
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'SPECIMEN_SYNTHESIZED',
+                    data: {
+                        id: currentSpecimen.accessionId,
+                        taxon: currentSpecimen.taxon,
+                        family: currentSpecimen.family,
+                        habit: currentSpecimen.habit,
+                        metrics: currentSpecimen.metrics
                     }
-                }
-                try {
-                    const ta = document.createElement('textarea');
-                    ta.value = text;
-                    ta.style.position = 'fixed';
-                    ta.style.left = '-9999px';
-                    ta.style.top = '-9999px';
-                    document.body.appendChild(ta);
-                    ta.focus();
-                    ta.select();
-                    const success = document.execCommand('copy');
-                    document.body.removeChild(ta);
-                    return success;
-                } catch (err) {
-                    return false;
-                }
+                }, '*');
+            }
+        };
+
+        // Fullscreen Viewer Functions Matching Geometry Vault
+        const openFullscreenViewer = () => {
+            const viewer = document.getElementById('fullscreen-viewer');
+            const viewerContent = document.getElementById('viewer-content');
+            const viewerSeq = document.getElementById('viewer-seq');
+            
+            if (!currentSpecimen || !currentSpecimen.canvas) return;
+            
+            const cloneCanvas = document.createElement('canvas');
+            cloneCanvas.width = currentSpecimen.canvas.width;
+            cloneCanvas.height = currentSpecimen.canvas.height;
+            const ctx = cloneCanvas.getContext('2d');
+            ctx.drawImage(currentSpecimen.canvas, 0, 0);
+            
+            cloneCanvas.style.maxWidth = '100%';
+            cloneCanvas.style.maxHeight = '100%';
+            cloneCanvas.style.width = 'auto';
+            cloneCanvas.style.height = 'auto';
+            
+            viewerContent.innerHTML = '';
+            viewerContent.appendChild(cloneCanvas);
+            viewerSeq.textContent = `${DOM.specimenId.textContent} | ${DOM.hashMetric.textContent}`;
+            
+            viewer.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeFullscreenViewer = () => {
+            const viewer = document.getElementById('fullscreen-viewer');
+            viewer.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        const handleViewerDownloadSVG = async () => {
+            try {
+                if (!currentSpecimen || !currentSpecimen.canvas) return;
+                const svgMarkup = FlowerDraw.generateSvgPlate(currentSpecimen.canvas, currentSpecimen.metrics);
+                await navigator.clipboard.writeText(svgMarkup);
+                const btn = document.getElementById('viewer-download-svg');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> COPIED';
+                setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
+            } catch (error) {
+                console.error('Viewer SVG error:', error);
+            }
+        };
+
+        const handleViewerDownloadPNG = () => {
+            if (!currentSpecimen || !currentSpecimen.canvas) return;
+
+            const btn = document.getElementById('viewer-download-png');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> RENDERING';
+
+            const ratio = getActiveRatio();
+            let exportW = CONFIG.baseExportScale;
+            let exportH = CONFIG.baseExportScale;
+
+            if (ratio.w > ratio.h) exportH = Math.round(CONFIG.baseExportScale * (ratio.h / ratio.w));
+            else if (ratio.h > ratio.w) exportW = Math.round(CONFIG.baseExportScale * (ratio.w / ratio.h));
+
+            setTimeout(() => {
+                const highRes = FlowerDraw.synthesize(DOM.idLoadInput.value.trim() || DOM.seedInput.value.trim() || "Botanical Specimen", {
+                    width: exportW,
+                    height: exportH,
+                    margin: Math.round(Math.min(exportW, exportH) * 0.024)
+                });
+
+                const downloadLink = document.createElement('a');
+                const safeFileName = (currentSpecimen.accessionId || 'specimen').replace(/[^a-zA-Z0-9_-]/g, '');
+                downloadLink.download = `botanical_specimen_${safeFileName}.png`;
+                downloadLink.href = highRes.canvas.toDataURL('image/png');
+                downloadLink.click();
+
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> SAVED';
+                setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
+            }, 30);
+        };
+
+        // Service & PostMessage Initialization Matching Geometry Vault
+        const initServiceLogic = () => {
+            const params = new URLSearchParams(window.location.search);
+            
+            if (params.get('mode') === 'embed') {
+                document.body.dataset.mode = 'embed';
             }
 
-            // PostMessage External Control Protocol (Parity with Geometry Vault)
+            if (params.get('narrative')) DOM.seedInput.value = params.get('narrative');
+            else if (params.get('seed')) DOM.seedInput.value = params.get('seed');
+            
+            if (params.get('id')) DOM.idLoadInput.value = params.get('id');
+            
+            if (params.get('w') && params.get('h')) {
+                DOM.ratioBtns.forEach(btn => {
+                    if (btn.dataset.w === params.get('w') && btn.dataset.h === params.get('h')) {
+                        DOM.ratioBtns.forEach(b => b.removeAttribute('data-active'));
+                        btn.setAttribute('data-active', 'true');
+                    }
+                });
+            }
+
+            // PostMessage interface (supports both UPDATE_SPECIMEN from Geometry Vault and direct event keys)
             window.addEventListener('message', (e) => {
-                if (!e.data || typeof e.data !== 'object') return;
+                if (!e.data) return;
                 const { type, data } = e.data;
-                if (type === 'UPDATE_SPECIMEN' || type === 'SET_SPECIMEN') {
-                    if (data.narrative) {
-                        DOM.seedInput.value = data.narrative;
-                        DOM.idLoadInput.value = '';
-                    } else if (data.seed) {
-                        DOM.seedInput.value = data.seed;
-                        DOM.idLoadInput.value = '';
+                if (type === 'UPDATE_SPECIMEN') {
+                    if (data.narrative || data.seed) {
+                        DOM.seedInput.value = data.narrative || data.seed;
+                        DOM.idLoadInput.value = "";
                     } else if (data.id) {
                         DOM.idLoadInput.value = data.id;
-                        DOM.seedInput.value = data.id;
+                        DOM.seedInput.value = "";
                     }
                     if (data.w && data.h) {
                         DOM.ratioBtns.forEach(btn => {
                             if (btn.dataset.w == data.w && btn.dataset.h == data.h) {
                                 DOM.ratioBtns.forEach(b => b.removeAttribute('data-active'));
                                 btn.setAttribute('data-active', 'true');
-                                STATE.currentRatio = { w: parseFloat(data.w), h: parseFloat(data.h) };
                             }
                         });
                     }
-                    synthesizeSpecimen();
+                    renderSynthesisPipeline();
                 } else if (type === 'SET_NARRATIVE' && data.narrative) {
                     DOM.seedInput.value = data.narrative;
-                    DOM.idLoadInput.value = '';
-                    synthesizeSpecimen();
-                } else if (type === 'SET_SEED' && data.seed) {
-                    DOM.seedInput.value = data.seed;
-                    DOM.idLoadInput.value = '';
-                    synthesizeSpecimen();
+                    DOM.idLoadInput.value = "";
+                    renderSynthesisPipeline();
                 } else if (type === 'SET_ID' && data.id) {
                     DOM.idLoadInput.value = data.id;
-                    DOM.seedInput.value = data.id;
-                    synthesizeSpecimen();
-                }
-            });
-
-            // Initial URL Parameter Parsing
-            function initFromUrl() {
-                const params = new URLSearchParams(window.location.search);
-                if (params.get('mode') === 'embed') {
-                    document.body.dataset.mode = 'embed';
-                }
-
-                if (params.get('id')) {
-                    DOM.idLoadInput.value = params.get('id');
-                    DOM.seedInput.value = '';
-                } else if (params.get('narrative')) {
-                    DOM.seedInput.value = params.get('narrative');
-                    DOM.idLoadInput.value = '';
-                } else if (params.get('seed')) {
-                    DOM.seedInput.value = params.get('seed');
-                    DOM.idLoadInput.value = '';
-                }
-
-                if (params.get('w') && params.get('h')) {
-                    const pw = params.get('w');
-                    const ph = params.get('h');
+                    DOM.seedInput.value = "";
+                    renderSynthesisPipeline();
+                } else if (type === 'SET_RATIO' && data.w && data.h) {
                     DOM.ratioBtns.forEach(btn => {
-                        if (btn.dataset.w === pw && btn.dataset.h === ph) {
+                        if (btn.dataset.w == data.w && btn.dataset.h == data.h) {
                             DOM.ratioBtns.forEach(b => b.removeAttribute('data-active'));
                             btn.setAttribute('data-active', 'true');
-                            STATE.currentRatio = { w: parseFloat(pw), h: parseFloat(ph) };
                         }
                     });
+                    renderSynthesisPipeline();
                 }
+            });
+        };
 
-                // Initial Synthesis Run
-                synthesizeSpecimen();
-            }
+        // Custom Cursor Matching Geometry Vault
+        const initCustomCursor = () => {
+            if (!window.matchMedia('(pointer: fine)').matches || document.body.dataset.mode === 'embed') return;
 
-            // Tactile Custom Cursor
-            function initCustomCursor() {
-                if (!window.matchMedia('(pointer: fine)').matches || document.body.dataset.mode === 'embed') return;
+            const cursor = document.createElement('div');
+            cursor.className = 'custom-cursor';
+            const trail = document.createElement('div');
+            trail.className = 'custom-cursor-trail';
+            
+            document.body.appendChild(cursor);
+            document.body.appendChild(trail);
 
-                let mouseX = -100, mouseY = -100, trailX = -100, trailY = -100;
-                document.addEventListener('mousemove', (e) => {
-                    mouseX = e.clientX;
-                    mouseY = e.clientY;
-                    DOM.customCursor.style.setProperty('--x', `${mouseX}px`);
-                    DOM.customCursor.style.setProperty('--y', `${mouseY}px`);
-                });
+            let mouseX = -100, mouseY = -100, trailX = -100, trailY = -100;
 
-                function animateTrail() {
-                    trailX += (mouseX - trailX) * 0.25;
-                    trailY += (mouseY - trailY) * 0.25;
-                    DOM.customCursorTrail.style.setProperty('--x', `${trailX}px`);
-                    DOM.customCursorTrail.style.setProperty('--y', `${trailY}px`);
-                    requestAnimationFrame(animateTrail);
-                }
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                cursor.style.setProperty('--x', `${mouseX}px`);
+                cursor.style.setProperty('--y', `${mouseY}px`);
+            });
+
+            const animateTrail = () => {
+                trailX += (mouseX - trailX) * 0.25;
+                trailY += (mouseY - trailY) * 0.25;
+                trail.style.setProperty('--x', `${trailX}px`);
+                trail.style.setProperty('--y', `${trailY}px`);
                 requestAnimationFrame(animateTrail);
+            };
+            requestAnimationFrame(animateTrail);
 
-                const updateInteractables = () => {
-                    document.querySelectorAll('a, button, input, .ratio-btn').forEach(el => {
-                        if (el.dataset.cursorHover) return;
-                        el.dataset.cursorHover = 'true';
-                        el.addEventListener('mouseenter', () => {
-                            DOM.customCursor.classList.add('hover');
-                            DOM.customCursorTrail.classList.add('hover');
-                        });
-                        el.addEventListener('mouseleave', () => {
-                            DOM.customCursor.classList.remove('hover');
-                            DOM.customCursorTrail.classList.remove('hover');
-                        });
+            const updateInteractables = () => {
+                document.querySelectorAll('a, button, input, .ratio-btn').forEach(el => {
+                    if (el.dataset.cursorHover) return;
+                    el.dataset.cursorHover = 'true';
+                    
+                    el.addEventListener('mouseenter', () => {
+                        cursor.classList.add('hover');
+                        trail.classList.add('hover');
                     });
-                };
-                updateInteractables();
-                const observer = new MutationObserver(() => updateInteractables());
-                observer.observe(document.body, { childList: true, subtree: true });
-            }
-
-            // Register Service Worker
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js').then(reg => {
-                        reg.update();
-                    }).catch(err => {
-                        console.warn('SW registration warning:', err);
+                    el.addEventListener('mouseleave', () => {
+                        cursor.classList.remove('hover');
+                        trail.classList.remove('hover');
                     });
                 });
+            };
+            
+            updateInteractables();
+            const observer = new MutationObserver(() => updateInteractables());
+            observer.observe(document.body, { childList: true, subtree: true });
+        };
+
+        // Wire Event Listeners
+        const renderDebounced = createDebouncer(renderSynthesisPipeline, 100);
+
+        DOM.ratioBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                DOM.ratioBtns.forEach(b => b.removeAttribute('data-active'));
+                btn.setAttribute('data-active', 'true');
+                renderSynthesisPipeline();
+            });
+        });
+
+        DOM.seedInput.addEventListener('input', () => {
+            DOM.idLoadInput.value = "";
+            renderDebounced();
+        });
+
+        DOM.idLoadInput.addEventListener('input', () => {
+            DOM.seedInput.value = "";
+            renderDebounced();
+        });
+
+        DOM.copyBtn.addEventListener('click', handleSVGExport);
+        DOM.pngBtn.addEventListener('click', handlePNGExport);
+        DOM.embedBtn.addEventListener('click', handleEmbedExport);
+
+        // Fullscreen viewer listeners
+        document.getElementById('fullscreen-btn').addEventListener('click', openFullscreenViewer);
+        document.getElementById('viewer-close').addEventListener('click', closeFullscreenViewer);
+        document.getElementById('viewer-download-svg').addEventListener('click', handleViewerDownloadSVG);
+        document.getElementById('viewer-download-png').addEventListener('click', handleViewerDownloadPNG);
+        
+        // ESC key to close viewer
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeFullscreenViewer();
             }
+        });
+        
+        // Click outside to close
+        document.getElementById('fullscreen-viewer').addEventListener('click', (e) => {
+            if (e.target.id === 'fullscreen-viewer' || e.target.classList.contains('backdrop-blur-sm')) {
+                closeFullscreenViewer();
+            }
+        });
 
-            // Kick off
+        // Initialize on DOM load
+        window.addEventListener('DOMContentLoaded', () => {
+            initServiceLogic();
+            renderSynthesisPipeline();
             initCustomCursor();
-            initFromUrl();
 
-        })();
+            // PWA Service Worker Registration
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => reg.update())
+                    .catch(err => console.warn('SW registration warning', err));
+            }
+        });
     </script>
 </body>
 </html>
