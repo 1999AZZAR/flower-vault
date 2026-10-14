@@ -132,12 +132,12 @@
         }
 
         /* Matrix Control Styling */
-        .ratio-btn {
+        .ratio-btn, .chroma-btn {
             border: 1px solid var(--archival-muted);
             transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .ratio-btn:hover { border-color: var(--archival-accent); color: var(--archival-accent); }
-        .ratio-btn[data-active="true"] {
+        .ratio-btn:hover, .chroma-btn:hover { border-color: var(--archival-accent); color: var(--archival-accent); }
+        .ratio-btn[data-active="true"], .chroma-btn[data-active="true"] {
             background: var(--archival-accent);
             color: var(--archival-surface);
             border-color: var(--archival-accent);
@@ -333,6 +333,40 @@
                         </div>
                     </div>
 
+                    <!-- Mineral Pigment Chroma Palette (Traditional Chinese Gongbi Standards) -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="font-tech text-[9px] text-[#7A7068]">MINERAL_PIGMENT_CHROMA</label>
+                            <span id="chroma-active-label" class="font-tech text-[8px] text-[#8B1A1A] font-semibold">AUTO</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-1.5" id="chroma-matrix">
+                            <button class="chroma-btn py-1.5 px-1.5 text-[8.5px] font-tech flex items-center justify-center gap-1 bg-[#E8E0D0]" data-chroma="auto" data-active="true">
+                                <span class="w-2 h-2 rounded-full border border-[#7A7068] bg-[#DDD5C5]"></span> AUTO
+                            </button>
+                            <button class="chroma-btn py-1.5 px-1.5 text-[8.5px] font-tech flex items-center justify-center gap-1 bg-[#E8E0D0]" data-chroma="carmine">
+                                <span class="w-2 h-2 rounded-full bg-[#C0392B]"></span> CARMINE
+                            </button>
+                            <button class="chroma-btn py-1.5 px-1.5 text-[8.5px] font-tech flex items-center justify-center gap-1 bg-[#E8E0D0]" data-chroma="lotus">
+                                <span class="w-2 h-2 rounded-full bg-[#E5989B]"></span> LOTUS
+                            </button>
+                            <button class="chroma-btn py-1.5 px-1.5 text-[8.5px] font-tech flex items-center justify-center gap-1 bg-[#E8E0D0]" data-chroma="gamboge">
+                                <span class="w-2 h-2 rounded-full bg-[#D4AC0D]"></span> GAMBOGE
+                            </button>
+                            <button class="chroma-btn py-1.5 px-1.5 text-[8.5px] font-tech flex items-center justify-center gap-1 bg-[#E8E0D0]" data-chroma="wisteria">
+                                <span class="w-2 h-2 rounded-full bg-[#8E44AD]"></span> WISTERIA
+                            </button>
+                            <button class="chroma-btn py-1.5 px-1.5 text-[8.5px] font-tech flex items-center justify-center gap-1 bg-[#E8E0D0]" data-chroma="indigo">
+                                <span class="w-2 h-2 rounded-full bg-[#2980B9]"></span> INDIGO
+                            </button>
+                            <button class="chroma-btn py-1.5 px-1.5 text-[8.5px] font-tech flex items-center justify-center gap-1 bg-[#E8E0D0]" data-chroma="celadon">
+                                <span class="w-2 h-2 rounded-full bg-[#27AE60]"></span> CELADON
+                            </button>
+                            <button class="chroma-btn py-1.5 px-1.5 text-[8.5px] font-tech flex items-center justify-center gap-1 bg-[#E8E0D0]" data-chroma="plum">
+                                <span class="w-2 h-2 rounded-full bg-[#5D6D7E]"></span> PLUM
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="space-y-1.5 pt-1">
                         <div class="flex justify-between items-center">
                             <label class="font-tech text-[9px] text-[#7A7068]">NARRATIVE_INJECTION_SEED</label>
@@ -388,28 +422,42 @@
                                 <span id="tel-habit" class="text-[#2A2520] font-semibold">Woody Suffruticose</span>
                             </div>
                             <div>
-                                <span class="text-[#7A7068] block text-[8px]">PHYLLOTAXY</span>
-                                <span id="tel-phyllotaxy" class="text-[#2A2520] font-semibold">Alternate Cauline</span>
-                            </div>
-                            <div>
-                                <span class="text-[#7A7068] block text-[8px]">FOLIAR LAMINA</span>
-                                <span id="tel-leaf" class="text-[#2A2520] font-semibold">Pinnate-reticulate</span>
+                                <span class="text-[#7A7068] block text-[8px]">COROLLA TIERS</span>
+                                <span id="tel-corolla" class="text-[#2A2520] font-semibold">Single Actinomorphic</span>
                             </div>
                             <div>
                                 <span class="text-[#7A7068] block text-[8px]">FLORAL MERISM</span>
                                 <span id="tel-petals" class="text-[#2A2520] font-semibold">8 Petals</span>
                             </div>
                             <div>
-                                <span class="text-[#7A7068] block text-[8px]">STEM AXES</span>
-                                <span id="tel-stem" class="text-[#2A2520] font-semibold">1 Primary Axis</span>
+                                <span class="text-[#7A7068] block text-[8px]">ANDROECIUM</span>
+                                <span id="tel-stamens" class="text-[#2A2520] font-semibold">18 Stamens</span>
                             </div>
                             <div>
+                                <span class="text-[#7A7068] block text-[8px]">FLORAL FORMULA</span>
+                                <span id="tel-formula" class="text-[#2A2520] font-semibold">⚥ K(5) C8 A18 G(3:5)</span>
+                            </div>
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">INFLORESCENCE</span>
+                                <span id="tel-inflorescence" class="text-[#2A2520] font-semibold">Solitary Terminal</span>
+                            </div>
+                            <div>
+                                <span class="text-[#7A7068] block text-[8px]">FOLIAR LAMINA</span>
+                                <span id="tel-leaf" class="text-[#2A2520] font-semibold">Pinnate-reticulate</span>
+                            </div>
+                            <div class="col-span-2">
                                 <span class="text-[#7A7068] block text-[8px]">PIGMENT CHROMA</span>
-                                <span id="tel-chroma" class="text-[#2A2520] font-semibold">Hue 340&deg; / 20&deg;</span>
+                                <span id="tel-chroma" class="text-[#2A2520] font-semibold">Cinnabar Carmine</span>
                             </div>
-                            <div>
-                                <span class="text-[#7A7068] block text-[8px]">PTR HASH / METRIC</span>
-                                <span id="tel-hash" class="text-[#2A2520] font-semibold">0x00000000</span>
+                            <div class="col-span-2 flex justify-between items-center pt-0.5 border-t border-[#DDD5C5]">
+                                <div>
+                                    <span class="text-[#7A7068] text-[8px]">PHYLLOTAXY: </span>
+                                    <span id="tel-phyllotaxy" class="text-[#2A2520] font-semibold">Alternate Cauline</span>
+                                </div>
+                                <div>
+                                    <span class="text-[#7A7068] text-[8px]">PTR: </span>
+                                    <span id="tel-hash" class="text-[#2A2520] font-semibold">0x00000000</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -478,7 +526,7 @@
     </main>
 
     <!-- Core Engine Scripts -->
-    <script src="js/flowerdraw.js?v=1.0.6"></script>
+    <script src="js/flowerdraw.js?v=1.0.7"></script>
     <script>
         const DOM = {
             target: document.getElementById('render-target'),
@@ -490,10 +538,13 @@
             telMeaning: document.getElementById('tel-meaning'),
             telFamily: document.getElementById('tel-family'),
             telHabit: document.getElementById('tel-habit'),
+            telCorolla: document.getElementById('tel-corolla'),
+            telPetals: document.getElementById('tel-petals'),
+            telStamens: document.getElementById('tel-stamens'),
+            telFormula: document.getElementById('tel-formula'),
+            telInflorescence: document.getElementById('tel-inflorescence'),
             telPhyllotaxy: document.getElementById('tel-phyllotaxy'),
             telLeaf: document.getElementById('tel-leaf'),
-            telPetals: document.getElementById('tel-petals'),
-            telStem: document.getElementById('tel-stem'),
             telChroma: document.getElementById('tel-chroma'),
             telHash: document.getElementById('tel-hash'),
             hashMetric: document.getElementById('hash-metric'),
@@ -501,7 +552,9 @@
             copyBtn: document.getElementById('copy-btn'),
             pngBtn: document.getElementById('png-btn'),
             embedBtn: document.getElementById('embed-btn'),
-            ratioBtns: document.querySelectorAll('.ratio-btn')
+            ratioBtns: document.querySelectorAll('.ratio-btn'),
+            chromaBtns: document.querySelectorAll('.chroma-btn'),
+            chromaActiveLabel: document.getElementById('chroma-active-label')
         };
 
         const CONFIG = {
@@ -510,6 +563,7 @@
         };
 
         let currentSpecimen = null;
+        let currentChroma = null;
 
         const getActiveRatio = () => {
             const activeBtn = document.querySelector('.ratio-btn[data-active="true"]');
@@ -622,7 +676,8 @@
                     const highRes = FlowerDraw.synthesize(currentSpecimen.accessionId, {
                         width: exportW,
                         height: exportH,
-                        margin: Math.round(Math.min(exportW, exportH) * 0.024)
+                        margin: Math.round(Math.min(exportW, exportH) * 0.024),
+                        chroma: currentChroma
                     });
                     if (highRes && highRes.canvas) {
                         exportCanvas = highRes.canvas;
@@ -670,7 +725,8 @@
                 margin: margin,
                 bg: '#EFE9DC',
                 stroke: '#2A2520',
-                metaColor: '#7A7068'
+                metaColor: '#7A7068',
+                chroma: currentChroma
             });
 
             DOM.target.innerHTML = '';
@@ -687,10 +743,13 @@
                 if (DOM.telMeaning) DOM.telMeaning.textContent = m.meaning || "";
                 if (DOM.telFamily) DOM.telFamily.textContent = m.family;
                 if (DOM.telHabit) DOM.telHabit.textContent = m.habit;
+                if (DOM.telCorolla) DOM.telCorolla.textContent = m.corollaType;
+                if (DOM.telPetals) DOM.telPetals.textContent = `${m.flowerPetals} Petals / Whorl (${m.totalPetals} Total)`;
+                if (DOM.telStamens) DOM.telStamens.textContent = `${m.stamenCount} Filaments`;
+                if (DOM.telFormula) DOM.telFormula.textContent = m.floralFormula;
+                if (DOM.telInflorescence) DOM.telInflorescence.textContent = m.inflorescence;
                 if (DOM.telPhyllotaxy) DOM.telPhyllotaxy.textContent = m.phyllotaxy;
                 if (DOM.telLeaf) DOM.telLeaf.textContent = `${m.leafType} (${m.leafLength}mm)`;
-                if (DOM.telPetals) DOM.telPetals.textContent = `${m.flowerPetals} Petals (${m.flowerLength}mm)`;
-                if (DOM.telStem) DOM.telStem.textContent = m.stemDynamics;
                 if (DOM.telChroma) DOM.telChroma.innerHTML = m.pigmentChroma;
                 if (DOM.telHash) DOM.telHash.textContent = m.hashHex;
             }
@@ -704,6 +763,11 @@
                 } else if (DOM.idLoadInput.value) {
                     url.searchParams.set('id', DOM.idLoadInput.value);
                     url.searchParams.delete('narrative');
+                }
+                if (currentChroma) {
+                    url.searchParams.set('chroma', currentChroma);
+                } else {
+                    url.searchParams.delete('chroma');
                 }
                 url.searchParams.set('w', ratio.w);
                 url.searchParams.set('h', ratio.h);
@@ -804,7 +868,8 @@
                     const highRes = FlowerDraw.synthesize(currentSpecimen.accessionId, {
                         width: exportW,
                         height: exportH,
-                        margin: Math.round(Math.min(exportW, exportH) * 0.024)
+                        margin: Math.round(Math.min(exportW, exportH) * 0.024),
+                        chroma: currentChroma
                     });
                     if (highRes && highRes.canvas) {
                         exportCanvas = highRes.canvas;
@@ -838,6 +903,18 @@
             else if (params.get('seed')) DOM.seedInput.value = params.get('seed');
             
             if (params.get('id')) DOM.idLoadInput.value = params.get('id');
+
+            if (params.get('chroma') || params.get('palette')) {
+                const pChroma = (params.get('chroma') || params.get('palette')).toLowerCase();
+                DOM.chromaBtns.forEach(btn => {
+                    if (btn.dataset.chroma === pChroma) {
+                        DOM.chromaBtns.forEach(b => b.removeAttribute('data-active'));
+                        btn.setAttribute('data-active', 'true');
+                        currentChroma = (pChroma === 'auto') ? null : pChroma;
+                        if (DOM.chromaActiveLabel) DOM.chromaActiveLabel.textContent = pChroma.toUpperCase();
+                    }
+                });
+            }
             
             if (params.get('w') && params.get('h')) {
                 DOM.ratioBtns.forEach(btn => {
@@ -860,6 +937,17 @@
                         DOM.idLoadInput.value = data.id;
                         DOM.seedInput.value = "";
                     }
+                    if (data.chroma || data.palette) {
+                        const pChroma = (data.chroma || data.palette).toLowerCase();
+                        DOM.chromaBtns.forEach(btn => {
+                            if (btn.dataset.chroma === pChroma) {
+                                DOM.chromaBtns.forEach(b => b.removeAttribute('data-active'));
+                                btn.setAttribute('data-active', 'true');
+                                currentChroma = (pChroma === 'auto') ? null : pChroma;
+                                if (DOM.chromaActiveLabel) DOM.chromaActiveLabel.textContent = pChroma.toUpperCase();
+                            }
+                        });
+                    }
                     if (data.w && data.h) {
                         DOM.ratioBtns.forEach(btn => {
                             if (btn.dataset.w == data.w && btn.dataset.h == data.h) {
@@ -868,6 +956,17 @@
                             }
                         });
                     }
+                    renderSynthesisPipeline();
+                } else if ((type === 'SET_CHROMA' || type === 'SET_PALETTE') && (data.chroma || data.palette)) {
+                    const pChroma = (data.chroma || data.palette).toLowerCase();
+                    DOM.chromaBtns.forEach(btn => {
+                        if (btn.dataset.chroma === pChroma) {
+                            DOM.chromaBtns.forEach(b => b.removeAttribute('data-active'));
+                            btn.setAttribute('data-active', 'true');
+                            currentChroma = (pChroma === 'auto') ? null : pChroma;
+                            if (DOM.chromaActiveLabel) DOM.chromaActiveLabel.textContent = pChroma.toUpperCase();
+                        }
+                    });
                     renderSynthesisPipeline();
                 } else if (type === 'SET_NARRATIVE' && data.narrative) {
                     DOM.seedInput.value = data.narrative;
@@ -920,7 +1019,7 @@
             requestAnimationFrame(animateTrail);
 
             const updateInteractables = () => {
-                document.querySelectorAll('a, button, input, .ratio-btn').forEach(el => {
+                document.querySelectorAll('a, button, input, .ratio-btn, .chroma-btn').forEach(el => {
                     if (el.dataset.cursorHover) return;
                     el.dataset.cursorHover = 'true';
                     
@@ -947,6 +1046,17 @@
             btn.addEventListener('click', (e) => {
                 DOM.ratioBtns.forEach(b => b.removeAttribute('data-active'));
                 btn.setAttribute('data-active', 'true');
+                renderSynthesisPipeline();
+            });
+        });
+
+        DOM.chromaBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                DOM.chromaBtns.forEach(b => b.removeAttribute('data-active'));
+                btn.setAttribute('data-active', 'true');
+                const c = btn.dataset.chroma;
+                currentChroma = (c === 'auto') ? null : c;
+                if (DOM.chromaActiveLabel) DOM.chromaActiveLabel.textContent = c.toUpperCase();
                 renderSynthesisPipeline();
             });
         });

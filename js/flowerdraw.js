@@ -743,8 +743,19 @@
     return paths;
   }
 
+  // Traditional Chinese Gongbi Mineral Pigment Standards (国画矿物颜料标本)
+  const MINERAL_PALETTES = {
+    carmine: { name: 'Cinnabar Carmine (朱砂・洋红)', hue0: 348, hue1: 18, sat: [0.55, 0.85], val: [0.70, 0.95], anther: '#F1C40F' },
+    lotus: { name: 'Lotus Blush (芙蓉・桃花)', hue0: 335, hue1: 355, sat: [0.30, 0.55], val: [0.85, 0.98], anther: '#E5A823' },
+    gamboge: { name: 'Imperial Gamboge (藤黄・秋赭)', hue0: 42, hue1: 26, sat: [0.65, 0.90], val: [0.80, 0.96], anther: '#8C531B' },
+    wisteria: { name: 'Wisteria Mauve (紫藤・蓝堇)', hue0: 275, hue1: 295, sat: [0.40, 0.68], val: [0.75, 0.92], anther: '#F39C12' },
+    indigo: { name: 'Indigo Azure (花青・点翠)', hue0: 215, hue1: 235, sat: [0.50, 0.80], val: [0.65, 0.88], anther: '#E67E22' },
+    celadon: { name: 'Malachite Celadon (石绿・青玉)', hue0: 155, hue1: 130, sat: [0.35, 0.60], val: [0.70, 0.90], anther: '#D35400' },
+    plum: { name: 'Snow Plum Bone (雪梅・冰心)', hue0: 355, hue1: 35, sat: [0.08, 0.25], val: [0.90, 0.99], anther: '#C0392B' }
+  };
+
   // Botanical Morphometric Parameter Generator
-  function generateBotanicalParams(prng, noise) {
+  function generateBotanicalParams(prng, noise, chromaOverride = null) {
     const PAR = {};
     const flowerShapeMask = (x) => pow(sin(PI * x), 0.2);
     const leafShapeMask = (x) => pow(sin(PI * x), 0.5);
@@ -768,21 +779,30 @@
       (x) => pow(sin(PI * x), leafPointyness)
     ]);
 
-    const flowerHue0 = (prng.normRand(0, 180) - 130 + 360) % 360;
-    const flowerHue1 = Math.floor((flowerHue0 + prng.normRand(-70, 70) + 360) % 360);
-    const flowerValue0 = Math.min(1, prng.normRand(0.5, 1.3));
-    const flowerValue1 = Math.min(1, prng.normRand(0.5, 1.3));
-    const flowerSaturation0 = prng.normRand(0, Math.max(0.1, 1.1 - flowerValue0));
-    const flowerSaturation1 = prng.normRand(0, Math.max(0.1, 1.1 - flowerValue1));
+    // Mineral Pigment Palette Resolution
+    const paletteKeys = Object.keys(MINERAL_PALETTES);
+    const chosenPaletteKey = (chromaOverride && MINERAL_PALETTES[chromaOverride.toLowerCase()])
+      ? chromaOverride.toLowerCase()
+      : prng.randChoice(paletteKeys);
+    const PAL = MINERAL_PALETTES[chosenPaletteKey];
 
+    const flowerHue0 = (PAL.hue0 + prng.normRand(-6, 6) + 360) % 360;
+    const flowerHue1 = (PAL.hue1 + prng.normRand(-6, 6) + 360) % 360;
+    const flowerValue0 = prng.normRand(PAL.val[0], PAL.val[1]);
+    const flowerValue1 = prng.normRand(PAL.val[0], PAL.val[1]);
+    const flowerSaturation0 = prng.normRand(PAL.sat[0], PAL.sat[1]);
+    const flowerSaturation1 = prng.normRand(PAL.sat[0], PAL.sat[1]);
+
+    PAR.paletteName = PAL.name;
+    PAR.paletteKey = chosenPaletteKey;
     PAR.flowerColor = {
-      min: [flowerHue0, flowerSaturation0, flowerValue0, prng.normRand(0.8, 1)],
-      max: [flowerHue1, flowerSaturation1, flowerValue1, prng.normRand(0.5, 1)]
+      min: [flowerHue0, flowerSaturation0, flowerValue0, prng.normRand(0.85, 1)],
+      max: [flowerHue1, flowerSaturation1, flowerValue1, prng.normRand(0.60, 0.95)]
     };
 
     PAR.leafColor = {
-      min: [prng.normRand(10, 200), prng.normRand(0.05, 0.4), prng.normRand(0.3, 0.7), prng.normRand(0.8, 1)],
-      max: [prng.normRand(10, 200), prng.normRand(0.05, 0.4), prng.normRand(0.3, 0.7), prng.normRand(0.8, 1)]
+      min: [prng.normRand(65, 140), prng.normRand(0.15, 0.45), prng.normRand(0.35, 0.70), prng.normRand(0.8, 1)],
+      max: [prng.normRand(45, 110), prng.normRand(0.20, 0.55), prng.normRand(0.40, 0.75), prng.normRand(0.8, 1)]
     };
 
     const curveCoeff0 = [prng.normRand(-0.5, 0.5), prng.normRand(5, 10)];
@@ -797,10 +817,10 @@
     PAR.flowerColorCurve = (x) => sigmoid(x + curveCoeff0[0], curveCoeff0[1]);
 
     PAR.leafLength = prng.normRand(30, 100);
-    PAR.flowerLength = prng.normRand(10, 55);
-    PAR.pedicelLength = prng.normRand(5, 30);
+    PAR.flowerLength = prng.normRand(12, 55);
+    PAR.pedicelLength = prng.normRand(6, 32);
     PAR.leafWidth = prng.normRand(5, 30);
-    PAR.flowerWidth = prng.normRand(5, 30);
+    PAR.flowerWidth = prng.normRand(8, 34);
 
     PAR.stemWidth = prng.normRand(2, 11);
     PAR.stemBend = prng.normRand(2, 16);
@@ -813,7 +833,31 @@
     PAR.shootLength = prng.normRand(50, 180);
     PAR.leafPosition = prng.randChoice([1, 2]);
 
-    PAR.flowerPetal = Math.max(3, Math.round(mapval(PAR.flowerWidth, 5, 50, 8, 3)));
+    // Corolla Architecture: Single, Semi-Double, Double Ruffled Whorls
+    const corollaRoll = prng.next();
+    if (corollaRoll < 0.35) {
+      PAR.corollaType = 'Single Actinomorphic (单瓣)';
+      PAR.whorlCount = 1;
+      PAR.flowerPetal = prng.randint(5, 8);
+    } else if (corollaRoll < 0.72) {
+      PAR.corollaType = 'Semi-Double Radiate (半重瓣)';
+      PAR.whorlCount = 2;
+      PAR.flowerPetal = prng.randint(6, 10);
+    } else {
+      PAR.corollaType = 'Double Ruffled Polypetalous (重瓣)';
+      PAR.whorlCount = 3;
+      PAR.flowerPetal = prng.randint(7, 11);
+    }
+
+    // Androecium (Stamens & Golden Anthers)
+    PAR.stamenCount = prng.randint(14, 26);
+    PAR.stamenLengthRatio = prng.normRand(0.24, 0.40);
+    PAR.antherColor = PAL.anther;
+
+    // Calyx & Buds
+    PAR.sepalCount = prng.randChoice([4, 5, 5, 6]);
+    PAR.sepalLengthRatio = prng.normRand(0.28, 0.42);
+    PAR.budChance = prng.normRand(0.25, 0.45);
 
     PAR.innerLength = Math.min(prng.normRand(0, 20), PAR.flowerLength * 0.8);
     PAR.innerWidth = Math.min(prng.randChoice([0, prng.normRand(1, 8)]), PAR.flowerWidth * 0.8);
@@ -836,8 +880,24 @@
       max: [branchHue, branchSaturation, branchValue, 1]
     };
 
-    // Derived Plant Habit: Woody vs. Herbal
-    PAR.habit = (prng.next() <= 0.5) ? 'Woody (Ligneous)' : 'Herbal (Herbaceous)';
+    // Plant Habit and Inflorescence Diversity
+    const habitRoll = prng.next();
+    if (habitRoll < 0.35) {
+      PAR.habit = 'Woody Suffruticose (Arborescent)';
+      PAR.inflorescence = 'Solitary Terminal (Paeonia-style)';
+    } else if (habitRoll < 0.65) {
+      PAR.habit = 'Herbal Cauline (Herbaceous)';
+      PAR.inflorescence = 'Corymbose Cyme (Chrysanthemum-style)';
+    } else if (habitRoll < 0.85) {
+      PAR.habit = 'Scandent Liana (Vining)';
+      PAR.inflorescence = 'Pendant Raceme (Wisteria-style)';
+    } else {
+      PAR.habit = 'Alpine Rosette (Sub-alpine)';
+      PAR.inflorescence = 'Umbellet Fascicle (Gentiana-style)';
+    }
+
+    const totalPetals = PAR.flowerPetal * PAR.whorlCount;
+    PAR.floralFormula = `⚥ K(${PAR.sepalCount}) C${totalPetals} A${PAR.stamenCount} G(3:5)`;
 
     return PAR;
   }
@@ -1041,6 +1101,186 @@
     return [[dep, P.map(v => [v[0] + xof, v[1] + yof, v[2]])]].concat(child);
   }
 
+  /**
+   * Draw Archival Chinese Gongbi Blossom with Multi-Whorl Petals, Sepals, and Golden Stamens.
+   */
+  function drawBlossom(layStem, layPetal, opts, noise, prng, PAR) {
+    const xof = opts.xof || 0;
+    const yof = opts.yof || 0;
+    const hhr = opts.rot || [0, 0, 0];
+    const flowerScale = opts.scale || 1.0;
+    const op = prng.next();
+    const isBud = (opts.isBud !== undefined) ? opts.isBud : (prng.next() < PAR.budChance);
+
+    if (isBud) {
+      // 1. Terminal Flower Bud: Clasping green/reddish sepals with emerging petal tip
+      const budSepals = 4;
+      const budLen = PAR.flowerLength * 0.45 * flowerScale;
+      const budWid = PAR.flowerWidth * 0.35 * flowerScale;
+
+      // Emerging petal tip peeking out first
+      drawLeaf(layPetal, {
+        flo: true,
+        xof: xof,
+        yof: yof,
+        rot: [hhr[0], hhr[1], hhr[2]],
+        len: budLen * 1.15,
+        wid: (x) => sin(x * PI) * (budWid * 0.75),
+        vei: [0],
+        col: PAR.flowerColor,
+        cof: PAR.flowerColorCurve,
+        ben: () => [2.0, 0, 0]
+      }, noise, prng);
+
+      // Clasping Calyx Sepals over the bud
+      for (let s = 0; s < budSepals; s++) {
+        const sepalRot = [hhr[0], hhr[1], hhr[2] + (s / budSepals) * PI * 2];
+        drawLeaf(layStem, {
+          flo: false,
+          xof: xof,
+          yof: yof,
+          rot: sepalRot,
+          len: budLen,
+          wid: (x) => sin(x * PI) * budWid,
+          vei: [1, 1],
+          col: {
+            min: [PAR.leafColor.min[0], 0.35, 0.40, 0.95],
+            max: [PAR.leafColor.max[0], 0.45, 0.55, 0.95]
+          },
+          ben: () => [3.2, 0, 0]
+        }, noise, prng);
+      }
+      return;
+    }
+
+    // 2. Open Flower - Calyx Sepals (Receptacle Support)
+    const sepalCount = PAR.sepalCount || 5;
+    const sepalLen = PAR.flowerLength * (PAR.sepalLengthRatio || 0.35) * flowerScale;
+    const sepalWid = PAR.flowerWidth * 0.35 * flowerScale;
+    for (let s = 0; s < sepalCount; s++) {
+      const sepalRot = [hhr[0], hhr[1], hhr[2] + (s / sepalCount) * PI * 2];
+      drawLeaf(layStem, {
+        flo: false,
+        xof: xof,
+        yof: yof,
+        rot: sepalRot,
+        len: sepalLen * prng.normRand(0.85, 1.15),
+        wid: (x) => sin(x * PI) * sepalWid,
+        vei: [1, 1],
+        col: {
+          min: [PAR.leafColor.min[0], 0.30, 0.38, 0.9],
+          max: [PAR.leafColor.max[0], 0.40, 0.52, 0.9]
+        },
+        ben: () => [-2.5, 0, 0]
+      }, noise, prng);
+    }
+
+    // 3. Multi-Whorl Petals (Outer Guard, Middle Radiate, Inner Ruffled)
+    const whorls = PAR.whorlCount || 1;
+    for (let w = 0; w < whorls; w++) {
+      const whorlScale = (w === 0) ? 1.0 : (w === 1 ? 0.78 : 0.58);
+      const whorlPetalCount = (w === 2) ? (PAR.flowerPetal + 1) : PAR.flowerPetal;
+      const staggerAngle = (w === 0) ? 0 : ((w === 1) ? (PI / whorlPetalCount) : (PI / whorlPetalCount * 0.5));
+      const len = PAR.flowerLength * whorlScale * prng.normRand(0.9, 1.1) * flowerScale;
+      const wid = (x) => PAR.flowerShape(x) * PAR.flowerWidth * whorlScale * flowerScale;
+      const cuppingFactor = 1 - w * 0.22;
+
+      for (let k = 0; k < whorlPetalCount; k++) {
+        const petalRot = [hhr[0], hhr[1], hhr[2] + staggerAngle + (k / whorlPetalCount) * PI * 2];
+
+        drawLeaf(layPetal, {
+          flo: true,
+          xof: xof,
+          yof: yof,
+          rot: petalRot,
+          len: len,
+          wid: wid,
+          vei: [0],
+          col: PAR.flowerColor,
+          cof: PAR.flowerColorCurve,
+          ben: (x) => [PAR.flowerOpenCurve(x, op) * cuppingFactor, 0, 0]
+        }, noise, prng);
+
+        if (PAR.innerWidth > 0 && w === 0) {
+          drawLeaf(layPetal, {
+            flo: true,
+            xof: xof,
+            yof: yof,
+            rot: petalRot,
+            len: PAR.innerLength * prng.normRand(0.8, 1.2) * flowerScale,
+            wid: (x) => sin(x * PI) * PAR.innerWidth * flowerScale,
+            vei: [0],
+            col: PAR.innerColor,
+            cof: (x) => x,
+            ben: (x) => [PAR.flowerOpenCurve(x, op), 0, 0]
+          }, noise, prng);
+        }
+      }
+    }
+
+    // 4. Androecium (Golden Radiating Stamens & Amber Anther Nodules)
+    const stamenCount = PAR.stamenCount || 18;
+    const baseStamenLen = PAR.flowerLength * (PAR.stamenLengthRatio || 0.32) * flowerScale;
+
+    layPetal.save();
+    for (let m = 0; m < stamenCount; m++) {
+      const stamenAngle = (m / stamenCount) * PI * 2 + prng.normRand(-0.08, 0.08);
+      const stamenLen = baseStamenLen * prng.normRand(0.85, 1.15);
+      const flareAngle = prng.normRand(0.25, 0.55);
+
+      const localVec = [
+        sin(stamenAngle) * sin(flareAngle) * stamenLen,
+        cos(stamenAngle) * sin(flareAngle) * stamenLen,
+        cos(flareAngle) * stamenLen
+      ];
+
+      const rotated = v3.roteuler(localVec, hhr);
+      const tipX = xof + rotated[0];
+      const tipY = yof + rotated[1];
+
+      // Stamen Filament Stroke
+      layPetal.strokeStyle = 'rgba(250, 245, 230, 0.85)';
+      layPetal.lineWidth = Math.max(0.7, 0.9 * (flowerScale || 1));
+      layPetal.beginPath();
+      layPetal.moveTo(xof, yof);
+      const midX = xof + rotated[0] * 0.55 + prng.normRand(-1, 1);
+      const midY = yof + rotated[1] * 0.55 + prng.normRand(-1, 1);
+      layPetal.quadraticCurveTo(midX, midY, tipX, tipY);
+      layPetal.stroke();
+
+      // Golden Anther Nodule
+      const antherRadius = Math.max(1.4, 2.0 * flowerScale);
+      layPetal.fillStyle = PAR.antherColor || '#E5A823';
+      layPetal.beginPath();
+      layPetal.arc(tipX, tipY, antherRadius, 0, PI * 2);
+      layPetal.fill();
+
+      // Micro Core
+      layPetal.fillStyle = '#6D3A0A';
+      layPetal.beginPath();
+      layPetal.arc(tipX, tipY, antherRadius * 0.45, 0, PI * 2);
+      layPetal.fill();
+    }
+
+    // 5. Central Gynoecium (Pistil Stigma / Emerald Carpels)
+    const carpelCount = 4;
+    const carpelLen = baseStamenLen * 0.45;
+    for (let c = 0; c < carpelCount; c++) {
+      const cAngle = (c / carpelCount) * PI * 2;
+      const cVec = [
+        sin(cAngle) * carpelLen * 0.4,
+        cos(cAngle) * carpelLen * 0.4,
+        carpelLen
+      ];
+      const cRot = v3.roteuler(cVec, hhr);
+      layPetal.fillStyle = 'rgba(75, 115, 65, 0.95)';
+      layPetal.beginPath();
+      layPetal.arc(xof + cRot[0], yof + cRot[1], Math.max(1.6, 2.2 * flowerScale), 0, PI * 2);
+      layPetal.fill();
+    }
+    layPetal.restore();
+  }
+
   // Generate Woody (Ligneous / Fruticose) Specimen
   function generateWoodyPlant(targetCtx, PAR, noise, prng, renderWidth, renderHeight) {
     const cwid = 1000;
@@ -1097,38 +1337,15 @@
               ben: () => [0, 0, 0]
             }, noise, prng);
 
-            const op = prng.next();
             const hhr = grot(P_, P_.length - 1);
-            const petalCount = PAR.flowerPetal;
+            const lastP = P_[P_.length - 1];
 
-            for (let k = 0; k < petalCount; k++) {
-              const lastP = P_[P_.length - 1];
-              drawLeaf(lay1, {
-                flo: true,
-                xof: pts[j][0] + lastP[0],
-                yof: pts[j][1] + lastP[1],
-                rot: [hhr[0], hhr[1], hhr[2] + (k / petalCount) * PI * 2],
-                len: PAR.flowerLength * prng.normRand(0.7, 1.3),
-                wid: (x) => PAR.flowerShape(x) * PAR.flowerWidth,
-                vei: [0],
-                col: PAR.flowerColor,
-                cof: PAR.flowerColorCurve,
-                ben: (x) => [PAR.flowerOpenCurve(x, op), 0, 0]
-              }, noise, prng);
-
-              drawLeaf(lay1, {
-                flo: true,
-                xof: pts[j][0] + lastP[0],
-                yof: pts[j][1] + lastP[1],
-                rot: [hhr[0], hhr[1], hhr[2] + (k / petalCount) * PI * 2],
-                len: PAR.innerLength * prng.normRand(0.8, 1.2),
-                wid: (x) => sin(x * PI) * 4,
-                vei: [0],
-                col: PAR.innerColor,
-                cof: (x) => x,
-                ben: (x) => [PAR.flowerOpenCurve(x, op), 0, 0]
-              }, noise, prng);
-            }
+            drawBlossom(lay0, lay1, {
+              xof: pts[j][0] + lastP[0],
+              yof: pts[j][1] + lastP[1],
+              rot: hhr,
+              scale: 1.0
+            }, noise, prng, PAR);
           }
         }
       }
@@ -1256,38 +1473,15 @@
           ]
         }, noise, prng);
 
-        const op = prng.next();
         const hhr = [prng.normRand(-1, 1) * PI, prng.normRand(-1, 1) * PI, prng.normRand(-1, 1) * PI];
         const lastP_ = P_[P_.length - 1];
-        const petalCount = PAR.flowerPetal;
 
-        for (let k = 0; k < petalCount; k++) {
-          drawLeaf(lay1, {
-            flo: true,
-            xof: x0 + lastP[0] + lastP_[0],
-            yof: y0 + lastP[1] + lastP_[1],
-            rot: [hhr[0], hhr[1], hhr[2] + (k / petalCount) * PI * 2],
-            len: PAR.flowerLength * prng.normRand(0.7, 1.3) * 1.5,
-            wid: (x) => 1.5 * PAR.flowerShape(x) * PAR.flowerWidth,
-            vei: [0],
-            col: PAR.flowerColor,
-            cof: PAR.flowerColorCurve,
-            ben: (x) => [PAR.flowerOpenCurve(x, op), 0, 0]
-          }, noise, prng);
-
-          drawLeaf(lay1, {
-            flo: true,
-            xof: x0 + lastP[0] + lastP_[0],
-            yof: y0 + lastP[1] + lastP_[1],
-            rot: [hhr[0], hhr[1], hhr[2] + (k / petalCount) * PI * 2],
-            len: PAR.innerLength * prng.normRand(0.8, 1.2),
-            wid: (x) => sin(x * PI) * 4,
-            vei: [0],
-            col: PAR.innerColor,
-            cof: (x) => x,
-            ben: (x) => [PAR.flowerOpenCurve(x, op), 0, 0]
-          }, noise, prng);
-        }
+        drawBlossom(lay0, lay1, {
+          xof: x0 + lastP[0] + lastP_[0],
+          yof: y0 + lastP[1] + lastP_[1],
+          rot: hhr,
+          scale: 1.35
+        }, noise, prng, PAR);
       }
     }
 
@@ -1381,6 +1575,108 @@
     ctx.restore();
   }
 
+  // Render Technical Drafting Scale Bar (Swiss-Archival Standard 20mm Rule)
+  function renderDraftingScaleBar(ctx, x, y, minDim, strokeColor, metaColor) {
+    const scaleFactor = minDim / 600;
+    const barW = Math.round(64 * scaleFactor);
+    const barH = Math.max(3, Math.round(3.5 * scaleFactor));
+    const segW = barW / 4;
+    const tickH = Math.max(2, Math.round(3 * scaleFactor));
+    const fontSize = Math.max(7, Math.round(8.5 * scaleFactor));
+    const captionSize = Math.max(6, Math.round(6.8 * scaleFactor));
+
+    ctx.save();
+    // 4 alternating filled and stroked segments (0-5-10-15-20mm)
+    for (let i = 0; i < 4; i++) {
+      const segX = x + i * segW;
+      if (i % 2 === 0) {
+        ctx.fillStyle = strokeColor;
+        ctx.fillRect(segX, y, segW, barH);
+      } else {
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 0.75;
+        ctx.strokeRect(segX, y, segW, barH);
+      }
+    }
+
+    // Outer frame for the bar
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 0.75;
+    ctx.strokeRect(x, y, barW, barH);
+
+    // Ticks above bar
+    ctx.beginPath();
+    ctx.moveTo(x, y - tickH);
+    ctx.lineTo(x, y);
+    ctx.moveTo(x + segW * 2, y - tickH);
+    ctx.lineTo(x + segW * 2, y);
+    ctx.moveTo(x + barW, y - tickH);
+    ctx.lineTo(x + barW, y);
+    ctx.stroke();
+
+    // Scale numerals
+    ctx.fillStyle = strokeColor;
+    ctx.font = `600 ${fontSize}px "JetBrains Mono", monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('0', x, y - tickH - 1);
+    ctx.fillText('10', x + segW * 2, y - tickH - 1);
+    ctx.fillText('20mm', x + barW, y - tickH - 1);
+
+    // Botanical Archival Subtitle
+    ctx.fillStyle = metaColor;
+    ctx.font = `500 ${captionSize}px "JetBrains Mono", monospace`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('NATURAL SCALE 1:1', x, y + barH + 3);
+    ctx.restore();
+  }
+
+  // Render Archival Vermilion Seal Chop (朱砂印章 · 草木典藏)
+  function renderArchivalSealChop(ctx, x, y, size) {
+    const sealRed = '#B83227';
+    ctx.save();
+
+    // Translucent wash ground
+    ctx.fillStyle = 'rgba(184, 50, 39, 0.06)';
+    ctx.fillRect(x, y, size, size);
+
+    // Outer primary border
+    ctx.strokeStyle = sealRed;
+    ctx.lineWidth = Math.max(1.2, size * 0.05);
+    ctx.strokeRect(x, y, size, size);
+
+    // Inner hairline frame
+    const inset = Math.max(1.5, size * 0.06);
+    ctx.lineWidth = Math.max(0.5, size * 0.02);
+    ctx.strokeRect(x + inset, y + inset, size - inset * 2, size - inset * 2);
+
+    // Internal grid divider
+    ctx.beginPath();
+    ctx.moveTo(x + size / 2, y + inset);
+    ctx.lineTo(x + size / 2, y + size - inset);
+    ctx.moveTo(x + inset, y + size / 2);
+    ctx.lineTo(x + size - inset, y + size / 2);
+    ctx.strokeStyle = 'rgba(184, 50, 39, 0.35)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+
+    // Archaic Seal Characters in 2x2 grid:
+    // Right col: 典 (top-right), 藏 (bottom-right)
+    // Left col:  草 (top-left),  木 (bottom-left)
+    const fontSize = Math.round(size * 0.36);
+    ctx.fillStyle = sealRed;
+    ctx.font = `bold ${fontSize}px "Noto Serif SC", "Source Han Serif", "Songti SC", "SimSun", serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('草', x + size * 0.28, y + size * 0.29);
+    ctx.fillText('典', x + size * 0.72, y + size * 0.29);
+    ctx.fillText('木', x + size * 0.28, y + size * 0.73);
+    ctx.fillText('藏', x + size * 0.72, y + size * 0.73);
+
+    ctx.restore();
+  }
+
   // ============================================================================
   // FlowerDraw Primary Interface
   // ============================================================================
@@ -1394,7 +1690,7 @@
     /**
      * Synthesize a complete botanical specimen plate onto a Canvas.
      * @param {string|number} seedInput - Narrative string, seed, or accession ID
-     * @param {object} options - Configuration overrides (width, height, stroke, bg)
+     * @param {object} options - Configuration overrides (width, height, stroke, bg, chroma)
      */
     synthesize: function(seedInput, options = {}) {
       let hash = 0;
@@ -1414,7 +1710,8 @@
 
       const prng = new SeedablePRNG(hash);
       const noise = new PerlinNoise(prng);
-      const PAR = generateBotanicalParams(prng, noise);
+      const chromaOverride = options.chroma || options.palette || null;
+      const PAR = generateBotanicalParams(prng, noise, chromaOverride);
 
       const width = options.width || 600;
       const height = options.height || 600;
@@ -1440,11 +1737,20 @@
         leafType: PAR.leafType[0] === 1 ? 'Parallel-veined' : 'Pinnate-reticulate',
         leafLength: Math.round(PAR.leafLength),
         leafWidth: Math.round(PAR.leafWidth),
+        corollaType: PAR.corollaType,
+        whorlCount: PAR.whorlCount,
         flowerPetals: PAR.flowerPetal,
+        totalPetals: PAR.flowerPetal * PAR.whorlCount,
         flowerLength: Math.round(PAR.flowerLength),
         flowerWidth: Math.round(PAR.flowerWidth),
+        stamens: `${PAR.stamenCount} Filaments (Anthers: ${PAR.antherColor})`,
+        stamenCount: PAR.stamenCount,
+        floralFormula: PAR.floralFormula,
+        inflorescence: PAR.inflorescence,
         stemDynamics: `${PAR.stemCount} Primary Axis (Bend: ${Math.round(PAR.stemBend * 10)}%)`,
-        pigmentChroma: `Hue ${Math.round(PAR.flowerColor.min[0])}° / ${Math.round(PAR.flowerColor.max[0])}°`,
+        paletteName: PAR.paletteName,
+        paletteKey: PAR.paletteKey,
+        pigmentChroma: `${PAR.paletteName} &bull; Hue ${Math.round(PAR.flowerColor.min[0])}&deg; / ${Math.round(PAR.flowerColor.max[0])}&deg;`,
         chlorophyllHue: `Hue ${Math.round(PAR.leafColor.min[0])}°`
       };
 
@@ -1471,7 +1777,7 @@
         // 3. Apply subtle paper grain texture
         drawPaperGrain(ctx, width, height, noise);
 
-        // Snapshot plantCanvas prior to border framing and cursive lettering
+        // Snapshot plantCanvas prior to border framing, scale bar, seal, and cursive lettering
         if (typeof document !== 'undefined') {
           plantCanvas = document.createElement('canvas');
           plantCanvas.width = width;
@@ -1497,7 +1803,18 @@
         ctx.strokeRect(margin + borderGap, margin + borderGap, width - (margin + borderGap) * 2, height - (margin + borderGap) * 2);
         ctx.restore();
 
-        // 5. Render Cursive Hershey Latin Binomen at Bottom-Center
+        // 5. Drafting Scale Bar (Bottom-Left)
+        const scaleBarX = margin + borderGap + Math.round(minDim * 0.02);
+        const scaleBarY = height - margin - borderGap - Math.round(minDim * 0.022);
+        renderDraftingScaleBar(ctx, scaleBarX, scaleBarY, minDim, strokeColor, metaColor);
+
+        // 6. Archival Vermilion Seal Chop (Bottom-Right)
+        const sealSize = Math.max(26, Math.round(minDim * 0.062));
+        const sealX = width - margin - borderGap - sealSize - Math.round(minDim * 0.02);
+        const sealY = height - margin - borderGap - sealSize - Math.round(minDim * 0.022);
+        renderArchivalSealChop(ctx, sealX, sealY, sealSize);
+
+        // 7. Render Cursive Hershey Latin Binomen at Bottom-Center
         const cursiveScale = Math.max(0.26, (minDim / 600) * 0.34);
         const cursiveY = height - margin - Math.max(12, Math.round(minDim * 0.025));
         const [textW] = put_text(taxon.taxonName);
@@ -1533,16 +1850,21 @@
       let plantCanvas = null;
       let m = metrics;
 
-      if (target && target.canvas) {
-        canvas = target.canvas;
-        plantCanvas = target.plantCanvas || null;
-        m = target.metrics || metrics;
-      } else if (target && target.tagName === 'CANVAS') {
-        canvas = target;
+      if (target && typeof target === 'object') {
+        if (target.canvas) {
+          canvas = target.canvas;
+          plantCanvas = target.plantCanvas || null;
+          m = target.metrics || metrics;
+        } else if (target.tagName === 'CANVAS') {
+          canvas = target;
+        } else {
+          canvas = null;
+          m = target.metrics || metrics;
+        }
       }
 
-      const width = canvas ? canvas.width : (options.width || 600);
-      const height = canvas ? canvas.height : (options.height || 600);
+      const width = (canvas && canvas.width) ? canvas.width : (options.width || (target && target.width) || 600);
+      const height = (canvas && canvas.height) ? canvas.height : (options.height || (target && target.height) || 600);
       const minDim = Math.min(width, height);
       const margin = options.margin || Math.round(minDim * 0.024);
       const borderGap = Math.max(3, Math.round(minDim * 0.007));
@@ -1559,10 +1881,28 @@
       const cursiveX = Math.round((width - textW * cursiveScale) / 2);
       const hersheySvgPaths = taxonName ? hersheyToSvgPaths(taxonName, cursiveX, cursiveY, cursiveScale) : '';
 
-      // Use plantCanvas if available for vector borders and Hershey text without double-printing
+      // Scale bar parameters
+      const scaleBarX = margin + borderGap + Math.round(minDim * 0.02);
+      const scaleBarY = height - margin - borderGap - Math.round(minDim * 0.022);
+      const scaleFactor = minDim / 600;
+      const barW = Math.round(64 * scaleFactor);
+      const barH = Math.max(3, Math.round(3.5 * scaleFactor));
+      const segW = barW / 4;
+      const tickH = Math.max(2, Math.round(3 * scaleFactor));
+      const scaleFontSize = Math.max(7, Math.round(8.5 * scaleFactor));
+      const captionFontSize = Math.max(6, Math.round(6.8 * scaleFactor));
+
+      // Seal chop parameters
+      const sealSize = Math.max(26, Math.round(minDim * 0.062));
+      const sealX = width - margin - borderGap - sealSize - Math.round(minDim * 0.02);
+      const sealY = height - margin - borderGap - sealSize - Math.round(minDim * 0.022);
+      const sealInset = Math.max(1.5, sealSize * 0.06);
+      const sealFontSize = Math.round(sealSize * 0.36);
+
+      // Use plantCanvas if available for vector borders, stamps, and Hershey text without double-printing
       const rasterSource = plantCanvas || canvas;
-      const dataUrl = rasterSource ? rasterSource.toDataURL('image/png') : '';
-      const hasBordersOnRaster = !plantCanvas;
+      const dataUrl = (rasterSource && typeof rasterSource.toDataURL === 'function') ? rasterSource.toDataURL('image/png') : '';
+      const hasBordersOnRaster = !plantCanvas && !!(rasterSource && typeof rasterSource.toDataURL === 'function');
 
       return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">
@@ -1576,6 +1916,34 @@
   <rect x="${margin}" y="${margin}" width="${width - margin * 2}" height="${height - margin * 2}" fill="none" stroke="${strokeColor}" stroke-width="${outerLineWidth.toFixed(2)}" />
   <rect x="${margin + borderGap}" y="${margin + borderGap}" width="${width - (margin + borderGap) * 2}" height="${height - (margin + borderGap) * 2}" fill="none" stroke="${metaColor}" stroke-width="${innerLineWidth.toFixed(2)}" />
   
+  <!-- Botanical Drafting Scale Bar (20mm Rule) -->
+  <g class="drafting-scale-bar" transform="translate(${scaleBarX}, ${scaleBarY})">
+    <rect x="0" y="0" width="${segW}" height="${barH}" fill="${strokeColor}" />
+    <rect x="${segW}" y="0" width="${segW}" height="${barH}" fill="none" stroke="${strokeColor}" stroke-width="0.75" />
+    <rect x="${segW * 2}" y="0" width="${segW}" height="${barH}" fill="${strokeColor}" />
+    <rect x="${segW * 3}" y="0" width="${segW}" height="${barH}" fill="none" stroke="${strokeColor}" stroke-width="0.75" />
+    <rect x="0" y="0" width="${barW}" height="${barH}" fill="none" stroke="${strokeColor}" stroke-width="0.75" />
+    <line x1="0" y1="${-tickH}" x2="0" y2="0" stroke="${strokeColor}" stroke-width="0.75" />
+    <line x1="${segW * 2}" y1="${-tickH}" x2="${segW * 2}" y2="0" stroke="${strokeColor}" stroke-width="0.75" />
+    <line x1="${barW}" y1="${-tickH}" x2="${barW}" y2="0" stroke="${strokeColor}" stroke-width="0.75" />
+    <text x="0" y="${-tickH - 2}" font-family="'JetBrains Mono', monospace" font-size="${scaleFontSize}" font-weight="600" fill="${strokeColor}" text-anchor="middle">0</text>
+    <text x="${segW * 2}" y="${-tickH - 2}" font-family="'JetBrains Mono', monospace" font-size="${scaleFontSize}" font-weight="600" fill="${strokeColor}" text-anchor="middle">10</text>
+    <text x="${barW}" y="${-tickH - 2}" font-family="'JetBrains Mono', monospace" font-size="${scaleFontSize}" font-weight="600" fill="${strokeColor}" text-anchor="middle">20mm</text>
+    <text x="0" y="${barH + captionFontSize + 2}" font-family="'JetBrains Mono', monospace" font-size="${captionFontSize}" font-weight="500" fill="${metaColor}">NATURAL SCALE 1:1</text>
+  </g>
+
+  <!-- Archival Vermilion Seal Chop (朱砂印章 · 草木典藏) -->
+  <g class="archival-seal" transform="translate(${sealX}, ${sealY})">
+    <rect width="${sealSize}" height="${sealSize}" fill="#B83227" fill-opacity="0.06" stroke="#B83227" stroke-width="${Math.max(1.2, sealSize * 0.05).toFixed(2)}" />
+    <rect x="${sealInset}" y="${sealInset}" width="${sealSize - sealInset * 2}" height="${sealSize - sealInset * 2}" fill="none" stroke="#B83227" stroke-width="${Math.max(0.5, sealSize * 0.02).toFixed(2)}" />
+    <line x1="${sealSize / 2}" y1="${sealInset}" x2="${sealSize / 2}" y2="${sealSize - sealInset}" stroke="#B83227" stroke-opacity="0.35" stroke-width="0.5" />
+    <line x1="${sealInset}" y1="${sealSize / 2}" x2="${sealSize - sealInset}" y2="${sealSize / 2}" stroke="#B83227" stroke-opacity="0.35" stroke-width="0.5" />
+    <text x="${sealSize * 0.28}" y="${sealSize * 0.38}" font-family="'Noto Serif SC', 'Source Han Serif', 'Songti SC', 'SimSun', serif" font-weight="bold" font-size="${sealFontSize}" fill="#B83227" text-anchor="middle">草</text>
+    <text x="${sealSize * 0.72}" y="${sealSize * 0.38}" font-family="'Noto Serif SC', 'Source Han Serif', 'Songti SC', 'SimSun', serif" font-weight="bold" font-size="${sealFontSize}" fill="#B83227" text-anchor="middle">典</text>
+    <text x="${sealSize * 0.28}" y="${sealSize * 0.80}" font-family="'Noto Serif SC', 'Source Han Serif', 'Songti SC', 'SimSun', serif" font-weight="bold" font-size="${sealFontSize}" fill="#B83227" text-anchor="middle">木</text>
+    <text x="${sealSize * 0.72}" y="${sealSize * 0.80}" font-family="'Noto Serif SC', 'Source Han Serif', 'Songti SC', 'SimSun', serif" font-weight="bold" font-size="${sealFontSize}" fill="#B83227" text-anchor="middle">藏</text>
+  </g>
+
   <!-- Engraved Cursive Botanical Binomen -->
   <g stroke="${strokeColor}" stroke-width="${(outerLineWidth * 1.05).toFixed(2)}" stroke-linecap="round" stroke-linejoin="round">
     ${hersheySvgPaths}

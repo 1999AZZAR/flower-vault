@@ -97,7 +97,7 @@
                 <p class="text-xs text-[#7A7068]">ARCHIVAL BOTANY & PROCEDURAL SPECIMEN SYNTHESIS PROTOCOLS</p>
             </div>
             <div class="text-right hidden sm:block">
-                <p class="font-tech text-[10px] text-[#7A7068]">VERSION: 1.0.0</p>
+                <p class="font-tech text-[10px] text-[#7A7068]">VERSION: 1.0.7</p>
                 <p class="font-tech text-[10px] text-[#8B1A1A]">STATUS: OPERATIONAL</p>
             </div>
         </header>
@@ -135,13 +135,13 @@
                 <div class="p-4 border border-[#DDD5C5] bg-[#EFE9DC]/50 space-y-2">
                     <div class="text-[#8B1A1A]">PHASE_03: PROCEDURAL MORPHOLOGY</div>
                     <div class="text-[#7A7068] normal-case font-sans">
-                        Spline skeletons are generated with 3D coordinate transformations. Foliage polygons are populated with primary and secondary venation ribs, followed by calyx and petal layering.
+                        Spline skeletons are generated with 3D coordinate transformations. Foliage polygons are populated with primary and secondary venation ribs, followed by calyx sepals, multi-whorl petals, and golden stamens.
                     </div>
                 </div>
                 <div class="p-4 border border-[#DDD5C5] bg-[#EFE9DC]/50 space-y-2">
                     <div class="text-[#8B1A1A]">PHASE_04: GONGBI CHROMATOGRAPHY</div>
                     <div class="text-[#7A7068] normal-case font-sans">
-                        Multi-pass alpha percolation simulates mineral pigments over xuan paper. The final specimen plate is auto-centered and engraved with plate registration stamps.
+                        Multi-pass alpha percolation simulates mineral pigments over xuan paper. The final specimen plate is framed with Swiss-Archival drafting borders, metric scale bar, vermilion seal chop, and cursive binomial lettering.
                     </div>
                 </div>
             </div>
@@ -151,19 +151,25 @@
         <section class="surface-card p-6 sm:p-8 rounded-sm space-y-4">
             <h2 class="font-tech text-xs text-[#8B1A1A] tracking-widest">[03] BOTANICAL_HABITS_AND_TRAITS</h2>
             <p class="text-sm text-[#4A423A]">
-                The engine distinguishes two primary growth architectures:
+                The engine distinguishes four morphological growth architectures:
             </p>
             <div class="space-y-3 text-xs">
                 <div class="p-3 border border-[#DDD5C5]">
-                    <span class="font-tech font-bold text-[#8B1A1A]">HABITUS WOODY (FRUTEX / ARBOR):</span>
+                    <span class="font-tech font-bold text-[#8B1A1A]">HABITUS WOODY SUFFRUTICOSE (ARBORESCENT / LIGNEOUS):</span>
                     <p class="mt-1 text-[#4A423A]">
                         Features bifurcating lignified stems with secondary cambial thickening. Bark texture is synthesized using multi-stroke charcoal strokes. Petioles emerge from nodes at staggered phyllotaxis angles. Flowers are distributed along terminal branches with variable nodding angles.
                     </p>
                 </div>
                 <div class="p-3 border border-[#DDD5C5]">
-                    <span class="font-tech font-bold text-[#8B1A1A]">HABITUS HERBAL (HERBA SUCCULENTA):</span>
+                    <span class="font-tech font-bold text-[#8B1A1A]">HABITUS HERBAL CAULINE (HERBACEOUS):</span>
                     <p class="mt-1 text-[#4A423A]">
-                        Exhibits soft succulent petioles radiating from basal or acaulescent nodes. Foliage features broader lamina surface area with delicate reticulate or parallel venation. Scapes support solitary or racemose floral inflorescences.
+                        Exhibits soft succulent petioles radiating from basal or acaulescent nodes. Foliage features broader lamina surface area with delicate reticulate or parallel venation. Scapes support corymbose cymes or solitary blossoms.
+                    </p>
+                </div>
+                <div class="p-3 border border-[#DDD5C5]">
+                    <span class="font-tech font-bold text-[#8B1A1A]">HABITUS SCANDENT LIANA &amp; ALPINE ROSETTE:</span>
+                    <p class="mt-1 text-[#4A423A]">
+                        Scandent lianas feature hanging pendant racemes and twining tendrils; alpine rosettes cluster compact fleshy basal leaf cushions supporting dense umbellet fascicles.
                     </p>
                 </div>
             </div>
@@ -179,7 +185,7 @@
             <div class="space-y-2">
                 <p class="font-tech text-xs text-[#2A2520] font-semibold">IFRAME EMBED MARKUP:</p>
                 <pre>&lt;iframe 
-  src="https://flower-vault.glassgallery.my.id/?mode=embed&amp;narrative=Alpine+Flora&amp;w=4&amp;h=5" 
+  src="https://flower-vault.glassgallery.my.id/?mode=embed&amp;narrative=Alpine+Flora&amp;chroma=carmine&amp;w=4&amp;h=5" 
   width="600" 
   height="750" 
   style="border: 1px solid #DDD5C5; background: #EFE9DC;"
@@ -210,6 +216,11 @@
                         <div>string</div>
                         <div>Freeform narrative text injected into the FNV-1a hashing algorithm.</div>
                     </div>
+                    <div class="grid grid-cols-3 p-2 border-b border-[#DDD5C5]/50">
+                        <div><code>chroma</code></div>
+                        <div>string</div>
+                        <div>Mineral pigment override: <code>carmine</code>, <code>lotus</code>, <code>gamboge</code>, <code>wisteria</code>, <code>indigo</code>, <code>celadon</code>, <code>plum</code>.</div>
+                    </div>
                     <div class="grid grid-cols-3 p-2">
                         <div><code>w</code>, <code>h</code></div>
                         <div>number</div>
@@ -223,16 +234,16 @@
                 <p class="text-xs text-[#4A423A]">
                     Parent applications can remotely control the embedded specimen engine via <code>window.postMessage</code>:
                 </p>
-                <pre>// Instruct embedded vault to synthesize by narrative:
+                <pre>// Instruct embedded vault to synthesize by narrative and pigment:
 iframeEl.contentWindow.postMessage({
-  type: 'SET_NARRATIVE',
-  data: { narrative: 'Nocturnal Jasmine of the East' }
+  type: 'UPDATE_SPECIMEN',
+  data: { narrative: 'Nocturnal Jasmine of the East', chroma: 'wisteria' }
 }, '*');
 
 // Listen for specimen telemetry events:
 window.addEventListener('message', (event) => {
   if (event.data?.type === 'SPECIMEN_SYNTHESIZED') {
-    const { id, taxon, family, habit } = event.data.data;
+    const { id, taxon, family, habit, metrics } = event.data.data;
     console.log('Specimen mounted:', id, taxon, family, habit);
   }
 });</pre>
@@ -243,12 +254,13 @@ window.addEventListener('message', (event) => {
         <section class="surface-card p-6 sm:p-8 rounded-sm space-y-4">
             <h2 class="font-tech text-xs text-[#8B1A1A] tracking-widest">[05] SPECIMEN_PLATE_PURITY_AND_EXPORTS</h2>
             <p class="text-sm text-[#4A423A]">
-                The specimen plate adheres to strict Swiss-Archival conventions. Ornamental visual clutter is eliminated in favor of clean technical stamps:
+                The specimen plate adheres to strict Swiss-Archival herbarium monograph standards. In-canvas debug labels are eliminated in favor of clean technical stamps:
             </p>
             <ul class="list-disc list-inside text-xs text-[#4A423A] space-y-1 pl-2">
-                <li><strong class="font-tech text-[#2A2520]">TOP-RIGHT:</strong> Memory pointer telemetry (e.g. <code>PTR:0x7F...</code>).</li>
-                <li><strong class="font-tech text-[#2A2520]">BOTTOM-LEFT:</strong> Archival accession identifier (e.g. <code>ID:FLV-7F-3K9X1A</code>).</li>
+                <li><strong class="font-tech text-[#2A2520]">DUAL DRAFTING BORDERS:</strong> Dual hairline framing rules following the Swiss-Archival standard.</li>
+                <li><strong class="font-tech text-[#2A2520]">BOTTOM-LEFT:</strong> Technical metric drafting scale bar (20mm rule, natural scale 1:1).</li>
                 <li><strong class="font-tech text-[#2A2520]">BOTTOM-CENTER:</strong> Engraved cursive Latin binomial name rendered via Hershey vector cursive glyphs.</li>
+                <li><strong class="font-tech text-[#2A2520]">BOTTOM-RIGHT:</strong> Vermilion cinnabar seal chop (朱砂印章 · 草木典藏).</li>
             </ul>
             <p class="text-sm text-[#4A423A] mt-2">
                 Both export formats are production-grade:
@@ -257,13 +269,13 @@ window.addEventListener('message', (event) => {
                 <div class="p-3 border border-[#DDD5C5]">
                     <div class="text-[#8B1A1A] font-bold mb-1">ARCHIVAL PNG (300 DPI)</div>
                     <p class="normal-case font-sans text-[#7A7068]">
-                        High-resolution 2400px raster render featuring mineral pigment gradients, paper grain percolation, and typography.
+                        High-resolution 2400px raster render featuring mineral pigment gradients, paper grain percolation, drafting borders, scale bar, seal chop, and typography.
                     </p>
                 </div>
                 <div class="p-3 border border-[#DDD5C5]">
                     <div class="text-[#8B1A1A] font-bold mb-1">STANDALONE VECTOR SVG</div>
                     <p class="normal-case font-sans text-[#7A7068]">
-                        Self-contained SVG plate containing high-res raster botanical canvas, vector drafting borders, technical stamps, and authentic Hershey vector cursive curves.
+                        Self-contained SVG plate containing high-res raster botanical canvas, vector drafting borders, metric scale bar, vermilion seal chop, and authentic Hershey vector cursive curves.
                     </p>
                 </div>
             </div>
