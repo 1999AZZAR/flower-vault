@@ -1478,27 +1478,13 @@
         ctx.strokeStyle = metaColor;
         ctx.lineWidth = 0.5;
         ctx.strokeRect(margin + 4, margin + 4, width - (margin + 4) * 2, height - (margin + 4) * 2);
-
-        // Plate stamps in JetBrains Mono / Tech font
-        const fontSize = Math.max(7.5, Math.min(10, Math.round(Math.min(width, height) * 0.018)));
-        ctx.fillStyle = metaColor;
-        ctx.font = `${fontSize}px 'JetBrains Mono', monospace`;
-        ctx.textBaseline = 'middle';
-
-        // Bottom-Left: ID:<accessionId>
-        ctx.textAlign = 'left';
-        ctx.fillText(`ID:${accessionId}`, margin + 8, height - margin - 10);
-
-        // Top-Right: PTR:<hashHex>
-        ctx.textAlign = 'right';
-        ctx.fillText(`PTR:${hashHex}`, width - margin - 8, margin + 14);
         ctx.restore();
 
         // 5. Render Cursive Hershey Latin Binomen at Bottom-Center
         const cursiveScale = Math.max(0.28, Math.min(0.38, (width / 600) * 0.34));
         const cursiveY = height - margin - 15;
         const [textW] = put_text(taxon.taxonName);
-        const cursiveX = Math.max(margin + 90, Math.round((width - textW * cursiveScale) / 2));
+        const cursiveX = Math.round((width - textW * cursiveScale) / 2);
         renderHersheyText(ctx, taxon.taxonName, cursiveX, cursiveY, cursiveScale, strokeColor);
       }
 
@@ -1535,10 +1521,8 @@
       const cursiveScale = Math.max(0.28, Math.min(0.38, (width / 600) * 0.34));
       const cursiveY = height - margin - 15;
       const [textW] = put_text(metrics.taxon || '');
-      const cursiveX = Math.max(margin + 90, Math.round((width - textW * cursiveScale) / 2));
+      const cursiveX = Math.round((width - textW * cursiveScale) / 2);
       const hersheySvgPaths = hersheyToSvgPaths(metrics.taxon || '', cursiveX, cursiveY, cursiveScale);
-
-      const fontSize = Math.max(7.5, Math.min(10, Math.round(Math.min(width, height) * 0.018)));
 
       return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">
@@ -1551,12 +1535,6 @@
   <!-- Archival Drafting Borders -->
   <rect x="${margin}" y="${margin}" width="${width - margin * 2}" height="${height - margin * 2}" fill="none" stroke="${strokeColor}" stroke-width="1.0" />
   <rect x="${margin + 4}" y="${margin + 4}" width="${width - (margin + 4) * 2}" height="${height - (margin + 4) * 2}" fill="none" stroke="${metaColor}" stroke-width="0.5" />
-  
-  <!-- Archival Typography Stamps -->
-  <g font-family="'JetBrains Mono', monospace" font-size="${fontSize}" fill="${metaColor}">
-    <text x="${margin + 8}" y="${height - margin - 10}">ID:${metrics.accessionId}</text>
-    <text x="${width - margin - 8}" y="${margin + 14}" text-anchor="end">PTR:${metrics.hashHex}</text>
-  </g>
   
   <!-- Engraved Cursive Botanical Binomen -->
   <g stroke="${strokeColor}" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
