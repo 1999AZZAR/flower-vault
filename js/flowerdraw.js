@@ -250,7 +250,14 @@
     }
   }
 
-  // Perlin Noise Generator
+  // Fast Lookup Table for Noise Cosine Interpolation
+  const NOISE_LUT_SIZE = 1024;
+  const NOISE_COS_LUT = new Float32Array(NOISE_LUT_SIZE + 1);
+  for (let i = 0; i <= NOISE_LUT_SIZE; i++) {
+    NOISE_COS_LUT[i] = 0.5 * (1.0 - Math.cos((i / NOISE_LUT_SIZE) * PI));
+  }
+
+  // Perlin Noise Generator (Optimized Dual 2D/3D Kernel)
   class PerlinNoise {
     constructor(prng) {
       this.prng = prng || Math;
@@ -273,17 +280,57 @@
     }
 
     scaled_cosine(i) {
-      return 0.5 * (1.0 - Math.cos(i * Math.PI));
+      const idx = (i * NOISE_LUT_SIZE) | 0;
+      return NOISE_COS_LUT[idx < 0 ? 0 : (idx > NOISE_LUT_SIZE ? NOISE_LUT_SIZE : idx)];
+    }
+
+    noise2D(x, y) {
+      if (x < 0) x = -x;
+      if (y < 0) y = -y;
+
+      let xi = x | 0;
+      let yi = y | 0;
+      let xf = x - xi;
+      let yf = y - yi;
+
+      let r = 0;
+      let ampl = 0.5;
+
+      for (let o = 0; o < this.perlin_octaves; o++) {
+        const of = xi + (yi << this.PERLIN_YWRAPB);
+        const xIdx = (xf * NOISE_LUT_SIZE) | 0;
+        const yIdx = (yf * NOISE_LUT_SIZE) | 0;
+        const rxf = NOISE_COS_LUT[xIdx < 0 ? 0 : (xIdx > NOISE_LUT_SIZE ? NOISE_LUT_SIZE : xIdx)];
+        const ryf = NOISE_COS_LUT[yIdx < 0 ? 0 : (yIdx > NOISE_LUT_SIZE ? NOISE_LUT_SIZE : yIdx)];
+
+        let n1 = this.perlin[of & this.PERLIN_SIZE];
+        n1 += rxf * (this.perlin[(of + 1) & this.PERLIN_SIZE] - n1);
+        let n2 = this.perlin[(of + this.PERLIN_YWRAP) & this.PERLIN_SIZE];
+        n2 += rxf * (this.perlin[(of + this.PERLIN_YWRAP + 1) & this.PERLIN_SIZE] - n2);
+        n1 += ryf * (n2 - n1);
+
+        r += n1 * ampl;
+        ampl *= this.perlin_amp_falloff;
+
+        xi <<= 1; xf *= 2;
+        yi <<= 1; yf *= 2;
+
+        if (xf >= 1.0) { xi++; xf--; }
+        if (yf >= 1.0) { yi++; yf--; }
+      }
+      return r;
     }
 
     noise(x, y = 0, z = 0) {
+      if (z === 0) return this.noise2D(x, y);
+
       if (x < 0) x = -x;
       if (y < 0) y = -y;
       if (z < 0) z = -z;
 
-      let xi = Math.floor(x);
-      let yi = Math.floor(y);
-      let zi = Math.floor(z);
+      let xi = x | 0;
+      let yi = y | 0;
+      let zi = z | 0;
       let xf = x - xi;
       let yf = y - yi;
       let zf = z - zi;
@@ -293,8 +340,11 @@
 
       for (let o = 0; o < this.perlin_octaves; o++) {
         let of = xi + (yi << this.PERLIN_YWRAPB) + (zi << this.PERLIN_ZWRAPB);
-        let rxf = this.scaled_cosine(xf);
-        let ryf = this.scaled_cosine(yf);
+        const xIdx = (xf * NOISE_LUT_SIZE) | 0;
+        const yIdx = (yf * NOISE_LUT_SIZE) | 0;
+        const zIdx = (zf * NOISE_LUT_SIZE) | 0;
+        const rxf = NOISE_COS_LUT[xIdx < 0 ? 0 : (xIdx > NOISE_LUT_SIZE ? NOISE_LUT_SIZE : xIdx)];
+        const ryf = NOISE_COS_LUT[yIdx < 0 ? 0 : (yIdx > NOISE_LUT_SIZE ? NOISE_LUT_SIZE : yIdx)];
 
         let n1 = this.perlin[of & this.PERLIN_SIZE];
         n1 += rxf * (this.perlin[(of + 1) & this.PERLIN_SIZE] - n1);
@@ -309,7 +359,8 @@
         n3 += rxf * (this.perlin[(of + this.PERLIN_YWRAP + 1) & this.PERLIN_SIZE] - n3);
         n2 += ryf * (n3 - n2);
 
-        n1 += this.scaled_cosine(zf) * (n2 - n1);
+        const rzf = NOISE_COS_LUT[zIdx < 0 ? 0 : (zIdx > NOISE_LUT_SIZE ? NOISE_LUT_SIZE : zIdx)];
+        n1 += rzf * (n2 - n1);
         r += n1 * ampl;
         ampl *= this.perlin_amp_falloff;
 
@@ -390,6 +441,17 @@
 
   function polygon(ctx, pts, col = 'black', fil = true, str = false, xof = 0, yof = 0) {
     if (!pts || pts.length === 0) return;
+    if (ctx && ctx._bounds) {
+      const b = ctx._bounds;
+      for (let i = 0; i < pts.length; i++) {
+        const px = pts[i][0] + xof;
+        const py = pts[i][1] + yof;
+        if (px < b.xmin) b.xmin = px;
+        if (px > b.xmax) b.xmax = px;
+        if (py < b.ymin) b.ymin = py;
+        if (py > b.ymax) b.ymax = py;
+      }
+    }
     ctx.beginPath();
     ctx.moveTo(pts[0][0] + xof, pts[0][1] + yof);
     for (let i = 1; i < pts.length; i++) {
@@ -406,7 +468,7 @@
   }
 
   function strokePath(ctx, pts, col, widFunc, noise, xof = 0, yof = 0) {
-    const wf = widFunc || ((x) => 1 * sin(x * PI) * mapval(noise.noise(x * 10), 0, 1, 0.5, 1));
+    const wf = widFunc || ((x) => 1 * sin(x * PI) * mapval(noise.noise2D ? noise.noise2D(x * 10, 0) : noise.noise(x * 10), 0, 1, 0.5, 1));
     const [vtx0, vtx1] = tubify(pts, wf);
     const poly = vtx0.concat(vtx1.slice().reverse());
     polygon(ctx, poly, col, true, false, xof, yof);
@@ -419,7 +481,21 @@
     return v3.toeuler(d);
   }
 
-  // Layer bound calculations
+  // Fast Analytical Layer Bound Calculations (Zero GPU Readback Overhead)
+  function getFastBounds(ctx) {
+    if (ctx._bounds && ctx._bounds.xmin <= ctx._bounds.xmax && ctx._bounds.ymin <= ctx._bounds.ymax) {
+      const pad = 12;
+      return {
+        xmin: Math.max(0, Math.floor(ctx._bounds.xmin - pad)),
+        xmax: Math.min(ctx.canvas.width, Math.ceil(ctx._bounds.xmax + pad)),
+        ymin: Math.max(0, Math.floor(ctx._bounds.ymin - pad)),
+        ymax: Math.min(ctx.canvas.height, Math.ceil(ctx._bounds.ymax + pad))
+      };
+    }
+    return getLayerBounds(ctx);
+  }
+
+  // Fallback Layer bound calculations
   function getLayerBounds(ctx) {
     const w = ctx.canvas.width;
     const h = ctx.canvas.height;
@@ -449,48 +525,56 @@
     };
   }
 
-  // Gongbi Pigment Filter & Bleed Simulation
-  function applyWispyFilter(ctx, noise) {
+  // Optimized Scoped Gongbi Pigment Filter (Single Pass across Active Sub-Bounds)
+  function applyGongbiFilter(ctx, noise, bounds, options = {}) {
+    const b = bounds || getFastBounds(ctx);
+    const x0 = b.xmin;
+    const y0 = b.ymin;
+    const w = b.xmax - b.xmin;
+    const h = b.ymax - b.ymin;
+    if (w <= 0 || h <= 0) return;
+
     try {
-      const w = ctx.canvas.width;
-      const h = ctx.canvas.height;
-      const imgd = ctx.getImageData(0, 0, w, h);
+      const imgd = ctx.getImageData(x0, y0, w, h);
       const pix = imgd.data;
-      for (let i = 0, n = pix.length; i < n; i += 4) {
-        if (pix[i + 3] === 0) continue;
+      const nPix = pix.length;
+      const doFade = options.fade === true;
+
+      for (let i = 0; i < nPix; i += 4) {
+        const a = pix[i + 3];
+        if (a === 0) continue;
+
         const idx = i >> 2;
-        const x = idx % w;
-        const y = Math.floor(idx / w);
-        const n1 = noise.noise(x * 0.2, y * 0.2);
-        const m1 = noise.noise(x * 0.5, y * 0.5, 2);
-        pix[i + 1] = Math.min(255, pix[i + 1] * mapval(m1, 0, 1, 0.95, 1));
-        pix[i + 2] = Math.min(255, pix[i + 2] * mapval(m1, 0, 1, 0.90, 1));
-        pix[i + 3] = Math.min(255, pix[i + 3] * mapval(n1, 0, 1, 0.5, 1));
+        const x = x0 + (idx % w);
+        const y = y0 + ((idx / w) | 0);
+
+        const n1 = noise.noise2D ? noise.noise2D(x * 0.2, y * 0.2) : noise.noise(x * 0.2, y * 0.2);
+        const m1 = noise.noise2D ? noise.noise2D(x * 0.5, y * 0.5) : noise.noise(x * 0.5, y * 0.5);
+
+        pix[i + 1] = Math.min(255, (pix[i + 1] * (0.95 + m1 * 0.05)) | 0);
+        pix[i + 2] = Math.min(255, (pix[i + 2] * (0.90 + m1 * 0.10)) | 0);
+
+        let alphaFactor = 0.5 + n1 * 0.5;
+        if (doFade) {
+          const fadeNoise = noise.noise2D ? noise.noise2D(x * 0.01, y * 0.01) : noise.noise(x * 0.01, y * 0.01);
+          alphaFactor *= (0.1 + fadeNoise * 0.9);
+        }
+
+        pix[i + 3] = Math.min(255, Math.max(0, (a * alphaFactor) | 0));
       }
-      ctx.putImageData(imgd, 0, 0);
+      ctx.putImageData(imgd, x0, y0);
     } catch (err) {
       // Ignored if canvas security policy blocks direct pixel access
     }
   }
 
+  // Legacy wrappers for compatibility
+  function applyWispyFilter(ctx, noise) {
+    applyGongbiFilter(ctx, noise, getFastBounds(ctx), { fade: false });
+  }
+
   function applyFadeFilter(ctx, noise) {
-    try {
-      const w = ctx.canvas.width;
-      const h = ctx.canvas.height;
-      const imgd = ctx.getImageData(0, 0, w, h);
-      const pix = imgd.data;
-      for (let i = 0, n = pix.length; i < n; i += 4) {
-        if (pix[i + 3] === 0) continue;
-        const idx = i >> 2;
-        const x = idx % w;
-        const y = Math.floor(idx / w);
-        const n1 = noise.noise(x * 0.01, y * 0.01);
-        pix[i + 3] = Math.min(255, Math.max(0, pix[i + 3] * mapval(n1, 0, 1, 0.1, 1)));
-      }
-      ctx.putImageData(imgd, 0, 0);
-    } catch (err) {
-      // Ignored
-    }
+    applyGongbiFilter(ctx, noise, getFastBounds(ctx), { fade: true });
   }
 
   // Botanical Taxonomy Dictionary (Rich Latin Binomens & Families)
@@ -908,10 +992,10 @@
     const yof = args.yof || 0;
     const rot = args.rot || [PI / 2, 0, 0];
     const len = args.len || 500;
-    const seg = args.seg || 40;
+    const flo = args.flo || false;
+    const seg = args.seg || (flo ? Math.min(18, Math.max(10, Math.round(len / 3))) : 40);
     const wid = args.wid || ((x) => sin(x * PI) * 20);
     const vei = args.vei || [1, 3];
-    const flo = args.flo || false;
     const col = args.col || { min: [90, 0.2, 0.3, 1], max: [90, 0.1, 0.9, 1] };
     const cof = args.cof || ((x) => x);
     const ben = args.ben || ((x) => [prng.normRand(-10, 10), 0, prng.normRand(-5, 5)]);
@@ -978,8 +1062,23 @@
       strokePath(ctx, P, rgba(0, 0, 0, 0.3), null, noise, xof, yof);
     }
 
-    strokePath(ctx, L, rgba(120, 100, 0, 0.3), null, noise, xof, yof);
-    strokePath(ctx, R, rgba(120, 100, 0, 0.3), null, noise, xof, yof);
+    if (flo) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(120, 100, 0, 0.25)';
+      ctx.lineWidth = 0.6;
+      ctx.beginPath();
+      ctx.moveTo(L[0][0] + xof, L[0][1] + yof);
+      for (let i = 1; i < L.length; i++) ctx.lineTo(L[i][0] + xof, L[i][1] + yof);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(R[0][0] + xof, R[0][1] + yof);
+      for (let i = 1; i < R.length; i++) ctx.lineTo(R[i][0] + xof, R[i][1] + yof);
+      ctx.stroke();
+      ctx.restore();
+    } else {
+      strokePath(ctx, L, rgba(120, 100, 0, 0.3), null, noise, xof, yof);
+      strokePath(ctx, R, rgba(120, 100, 0, 0.3), null, noise, xof, yof);
+    }
     return P;
   }
 
@@ -1238,6 +1337,14 @@
       const tipX = xof + rotated[0];
       const tipY = yof + rotated[1];
 
+      if (layPetal._bounds) {
+        const b = layPetal._bounds;
+        if (tipX < b.xmin) b.xmin = tipX;
+        if (tipX > b.xmax) b.xmax = tipX;
+        if (tipY < b.ymin) b.ymin = tipY;
+        if (tipY > b.ymax) b.ymax = tipY;
+      }
+
       // Stamen Filament Stroke
       layPetal.strokeStyle = 'rgba(250, 245, 230, 0.85)';
       layPetal.lineWidth = Math.max(0.7, 0.9 * (flowerScale || 1));
@@ -1283,16 +1390,18 @@
 
   // Generate Woody (Ligneous / Fruticose) Specimen
   function generateWoodyPlant(targetCtx, PAR, noise, prng, renderWidth, renderHeight) {
-    const cwid = 1000;
+    const cwid = 800;
     const canvas0 = document.createElement('canvas');
     canvas0.width = cwid;
     canvas0.height = cwid;
     const lay0 = canvas0.getContext('2d');
+    lay0._bounds = { xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity };
 
     const canvas1 = document.createElement('canvas');
     canvas1.width = cwid;
     canvas1.height = cwid;
     const lay1 = canvas1.getContext('2d');
+    lay1._bounds = { xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity };
 
     const PL = drawBranch(lay0, {
       xof: cwid * 0.5,
@@ -1318,9 +1427,9 @@
               rot: [prng.normRand(-1, 1) * PI, prng.normRand(-1, 1) * PI, 0],
               wid: (x) => PAR.leafShape(x) * PAR.leafWidth,
               ben: (x) => [
-                mapval(noise.noise(x * 1, i), 0, 1, -1, 1) * 5,
+                mapval(noise.noise2D ? noise.noise2D(x * 1, i) : noise.noise(x * 1, i), 0, 1, -1, 1) * 5,
                 0,
-                mapval(noise.noise(x * 1, i + PI), 0, 1, -1, 1) * 5
+                mapval(noise.noise2D ? noise.noise2D(x * 1, i + PI) : noise.noise(x * 1, i + PI), 0, 1, -1, 1) * 5
               ]
             }, noise, prng);
           }
@@ -1351,12 +1460,11 @@
       }
     }
 
-    applyFadeFilter(lay0, noise);
-    applyWispyFilter(lay0, noise);
-    applyWispyFilter(lay1, noise);
+    const b1 = getFastBounds(lay0);
+    const b2 = getFastBounds(lay1);
+    applyGongbiFilter(lay0, noise, b1, { fade: true });
+    applyGongbiFilter(lay1, noise, b2, { fade: false });
 
-    const b1 = getLayerBounds(lay0);
-    const b2 = getLayerBounds(lay1);
     const bd = {
       xmin: Math.min(b1.xmin, b2.xmin),
       xmax: Math.max(b1.xmax, b2.xmax),
@@ -1392,16 +1500,18 @@
 
   // Generate Herbal (Herbaceous) Specimen
   function generateHerbalPlant(targetCtx, PAR, noise, prng, renderWidth, renderHeight) {
-    const cwid = 1000;
+    const cwid = 800;
     const canvas0 = document.createElement('canvas');
     canvas0.width = cwid;
     canvas0.height = cwid;
     const lay0 = canvas0.getContext('2d');
+    lay0._bounds = { xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity };
 
     const canvas1 = document.createElement('canvas');
     canvas1.width = cwid;
     canvas1.height = cwid;
     const lay1 = canvas1.getContext('2d');
+    lay1._bounds = { xmin: Infinity, xmax: -Infinity, ymin: Infinity, ymax: -Infinity };
 
     const x0 = cwid * 0.5;
     const y0 = cwid * 0.8;
@@ -1413,11 +1523,11 @@
         yof: y0,
         len: PAR.stemLength * prng.normRand(0.7, 1.3),
         rot: r,
-        wid: (x) => PAR.stemWidth * (pow(sin(x * PI / 2 + PI / 2), 0.5) * noise.noise(x * 10) * 0.5 + 0.5),
+        wid: (x) => PAR.stemWidth * (pow(sin(x * PI / 2 + PI / 2), 0.5) * (noise.noise2D ? noise.noise2D(x * 10, 0) : noise.noise(x * 10)) * 0.5 + 0.5),
         ben: (x) => [
-          mapval(noise.noise(x * 1, i), 0, 1, -1, 1) * x * PAR.stemBend,
+          mapval(noise.noise2D ? noise.noise2D(x * 1, i) : noise.noise(x * 1, i), 0, 1, -1, 1) * x * PAR.stemBend,
           0,
-          mapval(noise.noise(x * 1, i + PI), 0, 1, -1, 1) * x * PAR.stemBend
+          mapval(noise.noise2D ? noise.noise2D(x * 1, i + PI) : noise.noise(x * 1, i + PI), 0, 1, -1, 1) * x * PAR.stemBend
         ]
       }, noise, prng);
 
@@ -1433,9 +1543,9 @@
               rot: [prng.normRand(-1, 1) * PI, prng.normRand(-1, 1) * PI, 0],
               wid: (x) => 2 * PAR.leafShape(x) * PAR.leafWidth,
               ben: (x) => [
-                mapval(noise.noise(x * 1, i), 0, 1, -1, 1) * 5,
+                mapval(noise.noise2D ? noise.noise2D(x * 1, i) : noise.noise(x * 1, i), 0, 1, -1, 1) * 5,
                 0,
-                mapval(noise.noise(x * 1, i + PI), 0, 1, -1, 1) * 5
+                mapval(noise.noise2D ? noise.noise2D(x * 1, i + PI) : noise.noise(x * 1, i + PI), 0, 1, -1, 1) * 5
               ]
             }, noise, prng);
           }
@@ -1467,9 +1577,9 @@
           col: { min: [70, 0.2, 0.9, 1], max: [70, 0.2, 0.9, 1] },
           wid: () => 2,
           ben: (x) => [
-            mapval(noise.noise(x * 1, j), 0, 1, -1, 1) * x * 10,
+            mapval(noise.noise2D ? noise.noise2D(x * 1, j) : noise.noise(x * 1, j), 0, 1, -1, 1) * x * 10,
             0,
-            mapval(noise.noise(x * 1, j + PI), 0, 1, -1, 1) * x * 10
+            mapval(noise.noise2D ? noise.noise2D(x * 1, j + PI) : noise.noise(x * 1, j + PI), 0, 1, -1, 1) * x * 10
           ]
         }, noise, prng);
 
@@ -1496,20 +1606,19 @@
           wid: (x) => 2 * PAR.leafShape(x) * PAR.leafWidth,
           vei: PAR.leafType,
           ben: (x) => [
-            mapval(noise.noise(x * 1, i), 0, 1, -1, 1) * 10,
+            mapval(noise.noise2D ? noise.noise2D(x * 1, i) : noise.noise(x * 1, i), 0, 1, -1, 1) * 10,
             0,
-            mapval(noise.noise(x * 1, i + PI), 0, 1, -1, 1) * 10
+            mapval(noise.noise2D ? noise.noise2D(x * 1, i + PI) : noise.noise(x * 1, i + PI), 0, 1, -1, 1) * 10
           ]
         }, noise, prng);
       }
     }
 
-    applyFadeFilter(lay0, noise);
-    applyWispyFilter(lay0, noise);
-    applyWispyFilter(lay1, noise);
+    const b1 = getFastBounds(lay0);
+    const b2 = getFastBounds(lay1);
+    applyGongbiFilter(lay0, noise, b1, { fade: true });
+    applyGongbiFilter(lay1, noise, b2, { fade: false });
 
-    const b1 = getLayerBounds(lay0);
-    const b2 = getLayerBounds(lay1);
     const bd = {
       xmin: Math.min(b1.xmin, b2.xmin),
       xmax: Math.max(b1.xmax, b2.xmax),
@@ -1542,9 +1651,13 @@
     targetCtx.restore();
   }
 
-  // Draw Procedural Paper Texture on Canvas
-  function drawPaperGrain(ctx, width, height, noise) {
+  // Draw Procedural Paper Texture on Canvas (Cached Hardware Pattern)
+  let cachedPaperGrainCanvas = null;
+
+  function getPaperGrainCanvas(noise) {
+    if (cachedPaperGrainCanvas) return cachedPaperGrainCanvas;
     const patchSize = 256;
+    if (typeof document === 'undefined') return null;
     const patchCanvas = document.createElement('canvas');
     patchCanvas.width = patchSize;
     patchCanvas.height = patchSize;
@@ -1555,7 +1668,7 @@
     for (let i = 0; i < patchSize; i++) {
       for (let j = 0; j < patchSize; j++) {
         const idx = (j * patchSize + i) * 4;
-        const n = noise.noise(i * 0.08, j * 0.08);
+        const n = noise.noise2D ? noise.noise2D(i * 0.08, j * 0.08) : noise.noise(i * 0.08, j * 0.08);
         const val = Math.floor(255 - n * 18 + (Math.random() - 0.5) * 8);
         d[idx] = Math.min(255, Math.floor(val * 0.94));     // R
         d[idx + 1] = Math.min(255, Math.floor(val * 0.91)); // G
@@ -1564,12 +1677,33 @@
       }
     }
     pctx.putImageData(pimg, 0, 0);
+    cachedPaperGrainCanvas = patchCanvas;
+    return patchCanvas;
+  }
+
+  function drawPaperGrain(ctx, width, height, noise) {
+    const patch = getPaperGrainCanvas(noise);
+    if (!patch) return;
 
     ctx.save();
     ctx.globalCompositeOperation = 'multiply';
-    for (let x = 0; x < width; x += patchSize) {
-      for (let y = 0; y < height; y += patchSize) {
-        ctx.drawImage(patchCanvas, x, y);
+    try {
+      const pattern = ctx.createPattern(patch, 'repeat');
+      if (pattern) {
+        ctx.fillStyle = pattern;
+        ctx.fillRect(0, 0, width, height);
+      } else {
+        for (let x = 0; x < width; x += 256) {
+          for (let y = 0; y < height; y += 256) {
+            ctx.drawImage(patch, x, y);
+          }
+        }
+      }
+    } catch (e) {
+      for (let x = 0; x < width; x += 256) {
+        for (let y = 0; y < height; y += 256) {
+          ctx.drawImage(patch, x, y);
+        }
       }
     }
     ctx.restore();

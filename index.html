@@ -526,7 +526,7 @@
     </main>
 
     <!-- Core Engine Scripts -->
-    <script src="js/flowerdraw.js?v=1.0.7"></script>
+    <script src="js/flowerdraw.js?v=1.1.0"></script>
     <script>
         const DOM = {
             target: document.getElementById('render-target'),
@@ -1040,7 +1040,7 @@
         };
 
         // Wire Event Listeners
-        const renderDebounced = createDebouncer(renderSynthesisPipeline, 100);
+        const renderDebounced = createDebouncer(renderSynthesisPipeline, 60);
 
         DOM.ratioBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
